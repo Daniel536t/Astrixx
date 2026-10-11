@@ -13,6 +13,7 @@
     "verify:phase3": "node scripts/verify-phase3-browser.mjs",
     "verify:crafting": "node scripts/verify-crafting-browser.mjs",
     "verify:shelter": "node scripts/verify-shelter-browser.mjs",
+    "verify:phase6": "node scripts/verify-phase6-browser.mjs",
     "agent:server": "tsx server/agent-server.ts",
     "mcp:server": "tsx server/mcp-server.ts",
     "eval:models": "tsx scripts/eval-models.ts",

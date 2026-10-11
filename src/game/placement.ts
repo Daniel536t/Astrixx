@@ -20,7 +20,11 @@ export type PlaceIntent =
   | { kind: 'auto' }
   | { kind: 'exact'; x: number; z: number }
   | { kind: 'relative'; from: EntityRef; dir: Compass; dist: 'near' | 'far' }
-  | { kind: 'near'; entity: EntityRef };
+  | { kind: 'near'; entity: EntityRef }
+  | { kind: 'edge'; dir: Compass };
+
+/** Distance from the camp to the clearing edge (inside the buildable square). */
+export const CLEARING_EDGE = 7;
 
 export const COMPASS_VECTORS: Record<Compass, { x: number; z: number }> = {
   north: { x: 0, z: -1 },
@@ -54,6 +58,11 @@ export function parsePlaceIntent(input: string): { intent: PlaceIntent; note: st
     };
   }
   const landmark = parseLandmark(input);
+  if (/\b(edge|border|rim|perimeter|outskirts)\b/.test(input)) {
+    for (const [pattern, dir] of COMPASS_WORDS) {
+      if (pattern.test(input)) return { intent: { kind: 'edge', dir }, note: `along the ${dir} edge of the clearing` };
+    }
+  }
   for (const [pattern, dir] of COMPASS_WORDS) {
     if (pattern.test(input)) {
       const dist = /\b(far|distant|deep)\b/.test(input) ? 'far' as const : 'near' as const;
@@ -118,6 +127,17 @@ export function resolvePlaceIntent(
 ): ResolvedSite | UnresolvedSite {
   if (intent.kind === 'auto') return { ok: false, clarify: '__AUTO__' };
   if (intent.kind === 'exact') return { ok: true, x: intent.x, z: intent.z, description: `exact requested position X:${intent.x} Z:${intent.z}` };
+  if (intent.kind === 'edge') {
+    const camp = state.entities['settlement-01'];
+    const origin = camp && 'position' in camp ? camp.position : { x: 0, z: 0 };
+    const vec = COMPASS_VECTORS[intent.dir];
+    return {
+      ok: true,
+      x: Math.round((origin.x + vec.x * CLEARING_EDGE) * 100) / 100,
+      z: Math.round((origin.z + vec.z * CLEARING_EDGE) * 100) / 100,
+      description: `the ${intent.dir} edge of the clearing`,
+    };
+  }
   const landmark = lookupLandmark(state, intent.kind === 'relative' ? intent.from : intent.entity, from);
   if (!landmark.ok) return landmark;
   if (intent.kind === 'near') {
@@ -170,4 +190,107 @@ function lookupLandmark(
   const named = state.entities[ref.which];
   if (!named || !('position' in named)) return { ok: false, clarify: `There is no ${ref.which} in this world. Standing trees: ${trees.map((t) => t.id).join(', ')}.` };
   return { ok: true, x: named.position.x, z: named.position.z, description: ref.which };
+}
+
+export interface ResolvedSites {
+  ok: true;
+  sites: Array<{ x: number; z: number }>;
+  description: string;
+}
+
+/**
+ * Multi-structure placement: one approximate intent spread into `quantity`
+ * candidate sites, spaced so neighbouring footprints never overlap. Sites
+ * run perpendicular to the compass direction (a row ALONG the northern
+ * edge runs east-west). Exact coordinates name a single site only.
+ * Each site is still validated (with tolerance) at execution.
+ */
+export function resolvePlaceSites(
+  state: Readonly<WorldState>,
+  intent: PlaceIntent,
+  quantity: number,
+  from: { x: number; z: number },
+  footprint: number,
+): ResolvedSites | UnresolvedSite {
+  if (intent.kind === 'exact' && quantity > 1) {
+    return { ok: false, clarify: `Exact coordinates name one site, but ${quantity} structures were requested. Give an approximate area (e.g. "along the northern edge") or place them one at a time with coordinates.` };
+  }
+  const centre = resolvePlaceIntent(state, intent, from);
+  if (!centre.ok) return centre;
+  if (quantity <= 1) return { ok: true, sites: [{ x: centre.x, z: centre.z }], description: centre.description };
+  const dir = intent.kind === 'relative' || intent.kind === 'edge' ? COMPASS_VECTORS[intent.dir] : { x: 0, z: -1 };
+  const across = { x: -dir.z, z: dir.x };
+  const spacing = footprint * 2 + 0.8;
+  const sites = Array.from({ length: quantity }, (_, i) => {
+    const offset = (i - (quantity - 1) / 2) * spacing;
+    return { x: Math.round((centre.x + across.x * offset) * 100) / 100, z: Math.round((centre.z + across.z * offset) * 100) / 100 };
+  });
+  return { ok: true, sites, description: `${quantity} sites ${spacing.toFixed(1)} apart around ${centre.description}` };
+}
+
+/**
+ * Which requested site each structure fulfils: greedy, nearest-first, one
+ * structure per site, within the approximate-placement tolerance. Pure —
+ * the planner and goal completion read the same answer.
+ */
+export function claimSites<T extends { x: number; z: number }>(
+  sites: ReadonlyArray<{ x: number; z: number }>,
+  structures: ReadonlyArray<T>,
+  tolerance: number,
+): Array<T | null> {
+  const used = new Set<number>();
+  return sites.map((site) => {
+    let best = -1;
+    let bestDist = Infinity;
+    structures.forEach((s, index) => {
+      if (used.has(index)) return;
+      const d = Math.hypot(s.x - site.x, s.z - site.z);
+      if (d <= tolerance + 0.25 && d < bestDist) {
+        best = index;
+        bestDist = d;
+      }
+    });
+    if (best < 0) return null;
+    used.add(best);
+    return structures[best]!;
+  });
+}
+
+const COMPASS_SET = new Set<string>(Object.keys(COMPASS_VECTORS));
+
+/**
+ * Schema check for a model-supplied placement intent. Only shapes the
+ * deterministic resolver understands pass; anything else is rejected, so a
+ * model can never smuggle raw coordinates past the exact/approximate rules.
+ */
+export function validatePlaceIntent(value: unknown): PlaceIntent | null {
+  if (typeof value !== 'object' || value === null) return null;
+  const v = value as Record<string, unknown>;
+  const ref = (r: unknown): EntityRef | null => {
+    if (typeof r !== 'object' || r === null) return null;
+    const k = (r as Record<string, unknown>)['kind'];
+    if (k === 'camp' || k === 'pond') return { kind: k };
+    const which = (r as Record<string, unknown>)['which'];
+    if (k === 'tree' && typeof which === 'string' && /^(largest|nearest|tree-\d{2})$/.test(which)) return { kind: 'tree', which };
+    return null;
+  };
+  switch (v['kind']) {
+    case 'auto':
+      return { kind: 'auto' };
+    case 'exact':
+      return typeof v['x'] === 'number' && typeof v['z'] === 'number' && Number.isFinite(v['x']) && Number.isFinite(v['z']) ? { kind: 'exact', x: v['x'], z: v['z'] } : null;
+    case 'relative': {
+      const from = ref(v['from']);
+      if (!from || typeof v['dir'] !== 'string' || !COMPASS_SET.has(v['dir']) || (v['dist'] !== 'near' && v['dist'] !== 'far')) return null;
+      return { kind: 'relative', from, dir: v['dir'] as Compass, dist: v['dist'] };
+    }
+    case 'near': {
+      const entity = ref(v['entity']);
+      return entity ? { kind: 'near', entity } : null;
+    }
+    case 'edge':
+      return typeof v['dir'] === 'string' && COMPASS_SET.has(v['dir']) ? { kind: 'edge', dir: v['dir'] as Compass } : null;
+    default:
+      return null;
+  }
 }

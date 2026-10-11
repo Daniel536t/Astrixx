@@ -85,23 +85,29 @@ describe('blueprint construction', () => {
     expect(Object.values(sim.state.entities).some((e) => e.kind === 'house')).toBe(false);
   });
 
-  it('places directed houses at distinct free slots near the request', () => {
+  it('places directed houses at distinct free sites near the request, recording any deviation', () => {
     const sim = manualSim();
     fundWood(sim, 9);
-    for (const [i, x] of [[1, 3.4], [2, 3.6]] as const) {
-      const proposal = sim.proposeAction('BUILD', 'settlement-01', { structure: 'house', x, z: -1.2 }, 'HIGH');
+    const proposals = [];
+    for (const [i, x] of [[1, -6.0], [2, -5.8]] as const) {
+      const proposal = sim.proposeAction('BUILD', 'settlement-01', { structure: 'house', x, z: 0 }, 'HIGH');
       expect(sim.approveProposal(proposal.id)).toBe(true);
-      sim.issueDirective({ actionType: 'BUILD', targetEntityId: 'settlement-01', reason: `directed-${i}`, parameters: { structure: 'house', x, z: -1.2 } }, 'worker-01');
+      sim.issueDirective({ actionType: 'BUILD', targetEntityId: 'settlement-01', reason: `directed-${i}`, parameters: { structure: 'house', x, z: 0 } }, 'worker-01');
       expect(sim.advanceUntil(() => proposal.status === 'VERIFIED', 2500), `house ${i}`).toBe(true);
+      proposals.push(proposal);
     }
+    // The first request was clear ground (no deviation); the second overlapped
+    // the first house and records requested vs chosen.
+    expect(proposals[0]!.parameters['deviation']).toBeUndefined();
+    expect(proposals[1]!.parameters['deviation']).toMatchObject({ requested: { x: -5.8, z: 0 } });
     const houses = Object.values(sim.state.entities).filter((e) => e.kind === 'house');
     expect(houses).toHaveLength(2);
     const positions = houses.map((h) => h.kind === 'house' ? `${h.position.x},${h.position.z}` : '');
     expect(new Set(positions).size).toBe(2);
-    // Both resolved near the requested east ground (slot 0 at 3.6,-1.2).
+    // Both stay near the requested east ground — no snapping to distant plots.
     for (const h of houses) {
       if (h.kind !== 'house') throw new Error('not a house');
-      expect(Math.hypot(h.position.x - 3.5, h.position.z + 1.2)).toBeLessThan(8);
+      expect(Math.hypot(h.position.x + 5.9, h.position.z)).toBeLessThanOrEqual(3.2);
     }
   });
 

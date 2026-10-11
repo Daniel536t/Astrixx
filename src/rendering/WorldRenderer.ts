@@ -565,11 +565,14 @@ export class WorldRenderer {
         const complete = entity.state === 'complete';
         view.traverse((part) => {
           if (part.userData['part'] === 'house-frame') part.visible = !complete;
+          // Stages mirror authoritative progress: frame → walls (1/3) →
+          // roof (2/3) → complete. The roof never shows before its stage.
           if (part.userData['part'] === 'house-body') {
-            part.visible = complete || entity.progress > 0.35;
-            if (!complete) part.scale.setScalar(0.4 + entity.progress * 0.6);
+            part.visible = complete || entity.progress >= 1 / 3;
+            if (!complete) part.scale.setScalar(0.55 + entity.progress * 0.45);
             else part.scale.setScalar(1);
           }
+          if (part.userData['part'] === 'house-roof') part.visible = complete || entity.progress >= 2 / 3;
         });
         this.syncSmoke(entity.id, complete, entity.position.x + 0.62, 2.35, entity.position.z - 0.3);
       }
