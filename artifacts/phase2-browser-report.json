@@ -1,0 +1,68 @@
+{
+  "url": "http://127.0.0.1:5173/?e2e=1",
+  "browser": "Playwright Chromium + SwiftShader WebGL",
+  "canvas": {
+    "width": 607,
+    "height": 740,
+    "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)"
+  },
+  "cameraInteraction": "drag and wheel changed paused canvas image",
+  "pauseTick": "00:01",
+  "totals": {
+    "wood": 1,
+    "food": 1
+  },
+  "woodEvents": [
+    "RESOURCE_TARGETED",
+    "GATHER_ACTION_STARTED",
+    "TREE_DAMAGED",
+    "TREE_CHOPPED",
+    "RESOURCE_CREATED",
+    "RESOURCE_PICKED_UP",
+    "RESOURCE_DELIVERED",
+    "RESOURCE_ADDED",
+    "RESOURCE_TARGETED"
+  ],
+  "foodEvents": [
+    "ENTITY_SPAWNED",
+    "ENTITY_SPAWNED",
+    "RESOURCE_TARGETED",
+    "GATHER_ACTION_STARTED",
+    "BERRY_PATCH_HARVESTED",
+    "RESOURCE_CREATED",
+    "RESOURCE_PICKED_UP",
+    "RESOURCE_DELIVERED",
+    "RESOURCE_ADDED"
+  ],
+  "verifiedProposals": [
+    {
+      "actionType": "PLAN",
+      "status": "VERIFIED",
+      "parameters": {
+        "planId": "plan-01",
+        "kind": "gather-wood",
+        "quantity": 1
+      }
+    },
+    {
+      "actionType": "PLAN",
+      "status": "VERIFIED",
+      "parameters": {
+        "planId": "plan-03",
+        "kind": "gather-food",
+        "quantity": 1
+      }
+    }
+  ],
+  "browserErrors": [],
+  "screenshots": {
+    "initial": "artifacts/astrix-phase2-initial.png",
+    "paused": "artifacts/astrix-phase2-paused.png",
+    "approach": "artifacts/astrix-phase2-approach.png",
+    "woodProgress": "artifacts/astrix-phase2-wood-in-progress.png",
+    "woodDelivered": "artifacts/astrix-phase2-wood-delivered.png",
+    "foodProgress": "artifacts/astrix-phase2-food-in-progress.png",
+    "foodTransport": "artifacts/astrix-phase2-food-transport.png",
+    "finalSettlement": "artifacts/astrix-phase2-final-settlement.png"
+  }
+}

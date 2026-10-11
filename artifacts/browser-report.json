@@ -1,0 +1,342 @@
+{
+  "url": "http://127.0.0.1:5173/",
+  "browser": "Playwright Chromium headless + SwiftShader WebGL",
+  "canvas": {
+    "width": 832,
+    "height": 772,
+    "webglVersion": "WebGL 2.0 (OpenGL ES 3.0 Chromium)"
+  },
+  "pause": {
+    "before": "00:01",
+    "after": "00:01",
+    "passed": true
+  },
+  "wood": "01",
+  "agent": "Paused by you",
+  "eventStream": [
+    "Berry patch selected",
+    "Harvest proposed",
+    "Agent chose berry harvest",
+    "Agent observed nearby resources",
+    "Wood added",
+    "Log delivered",
+    "Action proposed",
+    "Log picked up"
+  ],
+  "visibleMilestones": [
+    {
+      "label": "Berry patch selected",
+      "visible": true
+    },
+    {
+      "label": "Harvest proposed",
+      "visible": true
+    },
+    {
+      "label": "Berry gathering started",
+      "visible": false
+    },
+    {
+      "label": "Berries gathered",
+      "visible": false
+    },
+    {
+      "label": "Food basket created",
+      "visible": false
+    },
+    {
+      "label": "Food picked up",
+      "visible": false
+    },
+    {
+      "label": "Food delivered",
+      "visible": false
+    },
+    {
+      "label": "Food added",
+      "visible": false
+    }
+  ],
+  "chain": [
+    {
+      "step": "wood-target",
+      "label": "Tree",
+      "done": true
+    },
+    {
+      "step": "wood-walk",
+      "label": "Worker",
+      "done": true
+    },
+    {
+      "step": "wood-chop",
+      "label": "Chop",
+      "done": true
+    },
+    {
+      "step": "wood-log",
+      "label": "Log",
+      "done": true
+    },
+    {
+      "step": "wood-carry",
+      "label": "Carry",
+      "done": true
+    },
+    {
+      "step": "wood-settle",
+      "label": "Store",
+      "done": true
+    },
+    {
+      "step": "food-target",
+      "label": "Berries",
+      "done": true
+    },
+    {
+      "step": "food-walk",
+      "label": "Worker",
+      "done": true
+    },
+    {
+      "step": "food-harvest",
+      "label": "Gather",
+      "done": false
+    },
+    {
+      "step": "food-create",
+      "label": "Basket",
+      "done": false
+    },
+    {
+      "step": "food-carry",
+      "label": "Carry",
+      "done": false
+    },
+    {
+      "step": "food-settle",
+      "label": "Store",
+      "done": false
+    }
+  ],
+  "structuredEventTail": [
+    {
+      "sequence": 1,
+      "type": "ENTITY_SPAWNED"
+    },
+    {
+      "sequence": 2,
+      "type": "ENTITY_SPAWNED"
+    },
+    {
+      "sequence": 3,
+      "type": "ENTITY_SPAWNED"
+    },
+    {
+      "sequence": 4,
+      "type": "ENTITY_SPAWNED"
+    },
+    {
+      "sequence": 5,
+      "type": "ENTITY_SPAWNED"
+    },
+    {
+      "sequence": 6,
+      "type": "ENTITY_SPAWNED"
+    },
+    {
+      "sequence": 7,
+      "type": "ENTITY_SPAWNED"
+    },
+    {
+      "sequence": 8,
+      "type": "ENTITY_SPAWNED"
+    },
+    {
+      "sequence": 9,
+      "type": "ENTITY_SPAWNED"
+    },
+    {
+      "sequence": 10,
+      "type": "WORLD_INITIALIZED"
+    },
+    {
+      "sequence": 11,
+      "type": "AGENT_OBSERVED"
+    },
+    {
+      "sequence": 12,
+      "type": "AGENT_DECIDED"
+    },
+    {
+      "sequence": 13,
+      "type": "ACTION_PROPOSED"
+    },
+    {
+      "sequence": 14,
+      "type": "ACTION_STATUS_CHANGED"
+    },
+    {
+      "sequence": 15,
+      "type": "ACTION_STATUS_CHANGED"
+    },
+    {
+      "sequence": 16,
+      "type": "RESOURCE_TARGETED"
+    },
+    {
+      "sequence": 25,
+      "type": "GATHER_ACTION_STARTED"
+    },
+    {
+      "sequence": 26,
+      "type": "TREE_CHOPPED"
+    },
+    {
+      "sequence": 27,
+      "type": "ACTION_STATUS_CHANGED"
+    },
+    {
+      "sequence": 28,
+      "type": "ACTION_STATUS_CHANGED"
+    },
+    {
+      "sequence": 29,
+      "type": "AGENT_OBSERVED"
+    },
+    {
+      "sequence": 30,
+      "type": "AGENT_DECIDED"
+    },
+    {
+      "sequence": 31,
+      "type": "ACTION_PROPOSED"
+    },
+    {
+      "sequence": 32,
+      "type": "ACTION_STATUS_CHANGED"
+    },
+    {
+      "sequence": 33,
+      "type": "ACTION_STATUS_CHANGED"
+    },
+    {
+      "sequence": 34,
+      "type": "RESOURCE_TARGETED"
+    },
+    {
+      "sequence": 35,
+      "type": "GATHER_ACTION_STARTED"
+    },
+    {
+      "sequence": 36,
+      "type": "TREE_CHOPPED"
+    },
+    {
+      "sequence": 37,
+      "type": "RESOURCE_CREATED"
+    },
+    {
+      "sequence": 38,
+      "type": "ACTION_STATUS_CHANGED"
+    },
+    {
+      "sequence": 39,
+      "type": "ACTION_STATUS_CHANGED"
+    },
+    {
+      "sequence": 40,
+      "type": "AGENT_OBSERVED"
+    },
+    {
+      "sequence": 41,
+      "type": "AGENT_DECIDED"
+    },
+    {
+      "sequence": 42,
+      "type": "ACTION_PROPOSED"
+    },
+    {
+      "sequence": 43,
+      "type": "ACTION_STATUS_CHANGED"
+    },
+    {
+      "sequence": 44,
+      "type": "ACTION_STATUS_CHANGED"
+    },
+    {
+      "sequence": 46,
+      "type": "ACTION_STATUS_CHANGED"
+    },
+    {
+      "sequence": 47,
+      "type": "ACTION_STATUS_CHANGED"
+    },
+    {
+      "sequence": 48,
+      "type": "RESOURCE_PICKED_UP"
+    },
+    {
+      "sequence": 49,
+      "type": "ACTION_PROPOSED"
+    },
+    {
+      "sequence": 50,
+      "type": "ACTION_STATUS_CHANGED"
+    },
+    {
+      "sequence": 51,
+      "type": "ACTION_STATUS_CHANGED"
+    },
+    {
+      "sequence": 52,
+      "type": "ACTION_STATUS_CHANGED"
+    },
+    {
+      "sequence": 69,
+      "type": "ACTION_STATUS_CHANGED"
+    },
+    {
+      "sequence": 70,
+      "type": "ACTION_STATUS_CHANGED"
+    },
+    {
+      "sequence": 71,
+      "type": "RESOURCE_DELIVERED"
+    },
+    {
+      "sequence": 72,
+      "type": "RESOURCE_ADDED"
+    },
+    {
+      "sequence": 73,
+      "type": "AGENT_OBSERVED"
+    },
+    {
+      "sequence": 74,
+      "type": "AGENT_DECIDED"
+    },
+    {
+      "sequence": 75,
+      "type": "ACTION_PROPOSED"
+    },
+    {
+      "sequence": 76,
+      "type": "ACTION_STATUS_CHANGED"
+    },
+    {
+      "sequence": 77,
+      "type": "ACTION_STATUS_CHANGED"
+    },
+    {
+      "sequence": 78,
+      "type": "RESOURCE_TARGETED"
+    }
+  ],
+  "browserErrors": [],
+  "screenshots": [
+    "astrix-final-initial.png",
+    "astrix-final-paused.png",
+    "astrix-final-delivered.png"
+  ]
+}

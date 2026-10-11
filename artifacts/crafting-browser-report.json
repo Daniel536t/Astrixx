@@ -1,0 +1,128 @@
+{
+  "url": "http://127.0.0.1:5173/?e2e=1",
+  "mode": "LOCAL SIMULATION — craft slice acceptance",
+  "goal": "GOAL · CRAFT STONE AXE · ACTIVE",
+  "equipment": {
+    "axe": "stone-axe",
+    "basket": false
+  },
+  "collected": {
+    "branches": 3,
+    "stones": 2
+  },
+  "plan": {
+    "id": "plan-01",
+    "kind": "craft",
+    "status": "completed",
+    "steps": [
+      {
+        "actionType": "COLLECT",
+        "targetEntityId": "stone-02",
+        "source": "planner: The stone-axe needs branch and stone; collect the nearest stone.",
+        "status": "verified",
+        "note": "postcondition independently verified",
+        "index": 0,
+        "at": 53
+      },
+      {
+        "actionType": "COLLECT",
+        "targetEntityId": "stone-02",
+        "source": "planner: The stone-axe needs branch and stone; collect the nearest stone.",
+        "status": "blocked",
+        "note": "step could not start (stale target or busy worker)",
+        "index": 1,
+        "at": 53
+      },
+      {
+        "actionType": "COLLECT",
+        "targetEntityId": "stone-03",
+        "source": "planner: The stone-axe needs branch and stone; collect the nearest stone.",
+        "status": "verified",
+        "note": "postcondition independently verified",
+        "index": 2,
+        "at": 68
+      },
+      {
+        "actionType": "COLLECT",
+        "targetEntityId": "stone-03",
+        "source": "planner: The stone-axe needs branch and stone; collect the nearest stone.",
+        "status": "blocked",
+        "note": "step could not start (stale target or busy worker)",
+        "index": 3,
+        "at": 68
+      },
+      {
+        "actionType": "COLLECT",
+        "targetEntityId": "branch-01",
+        "source": "planner: The stone-axe needs branch; collect the nearest branch.",
+        "status": "verified",
+        "note": "postcondition independently verified",
+        "index": 4,
+        "at": 89
+      },
+      {
+        "actionType": "COLLECT",
+        "targetEntityId": "branch-01",
+        "source": "planner: The stone-axe needs branch; collect the nearest branch.",
+        "status": "blocked",
+        "note": "step could not start (stale target or busy worker)",
+        "index": 5,
+        "at": 89
+      },
+      {
+        "actionType": "COLLECT",
+        "targetEntityId": "branch-02",
+        "source": "planner: The stone-axe needs branch; collect the nearest branch.",
+        "status": "verified",
+        "note": "postcondition independently verified",
+        "index": 6,
+        "at": 112
+      },
+      {
+        "actionType": "COLLECT",
+        "targetEntityId": "branch-02",
+        "source": "planner: The stone-axe needs branch; collect the nearest branch.",
+        "status": "blocked",
+        "note": "step could not start (stale target or busy worker)",
+        "index": 7,
+        "at": 112
+      },
+      {
+        "actionType": "COLLECT",
+        "targetEntityId": "branch-04",
+        "source": "planner: The stone-axe needs branch; collect the nearest branch.",
+        "status": "verified",
+        "note": "postcondition independently verified",
+        "index": 8,
+        "at": 146
+      },
+      {
+        "actionType": "COLLECT",
+        "targetEntityId": "branch-04",
+        "source": "planner: The stone-axe needs branch; collect the nearest branch.",
+        "status": "blocked",
+        "note": "step could not start (stale target or busy worker)",
+        "index": 9,
+        "at": 146
+      },
+      {
+        "actionType": "CRAFT",
+        "targetEntityId": "settlement-01",
+        "source": "sim",
+        "status": "verified",
+        "note": "postcondition independently verified",
+        "index": 10,
+        "at": 184
+      }
+    ]
+  },
+  "oneBlowTree": "tree-04",
+  "browserErrors": [],
+  "screenshots": {
+    "initial": "artifacts/astrix-craft-initial.png",
+    "collecting": "artifacts/astrix-craft-collecting.png",
+    "crafting": "artifacts/astrix-craft-crafting.png",
+    "equipped": "artifacts/astrix-craft-equipped.png",
+    "oneBlowFell": "artifacts/astrix-craft-one-blow.png"
+  }
+}

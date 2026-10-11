@@ -1,0 +1,527 @@
+{
+  "at": "2026-10-09T15:16:40.560Z",
+  "report": {
+    "meta/muse-glimmer-30b": {
+      "keySlot": "A",
+      "credentialConfigured": true,
+      "scenarios": [
+        {
+          "scenario": "basic",
+          "ok": false,
+          "valid": false,
+          "legal": false,
+          "actionType": null,
+          "target": null,
+          "latencyMs": 33741,
+          "promptTokens": 444,
+          "completionTokens": 1024,
+          "finishCapped": false,
+          "note": "unparseable reply"
+        },
+        {
+          "scenario": "shortage",
+          "ok": false,
+          "valid": false,
+          "legal": false,
+          "actionType": null,
+          "target": null,
+          "latencyMs": 61429,
+          "promptTokens": 444,
+          "completionTokens": 1024,
+          "finishCapped": false,
+          "note": "unparseable reply"
+        },
+        {
+          "scenario": "depleted",
+          "ok": false,
+          "valid": false,
+          "legal": false,
+          "actionType": null,
+          "target": null,
+          "latencyMs": 24239,
+          "promptTokens": 462,
+          "completionTokens": 1024,
+          "finishCapped": false,
+          "note": "unparseable reply"
+        },
+        {
+          "scenario": "recovery",
+          "ok": false,
+          "valid": false,
+          "legal": false,
+          "actionType": null,
+          "target": null,
+          "latencyMs": 24823,
+          "promptTokens": 466,
+          "completionTokens": 1024,
+          "finishCapped": false,
+          "note": "unparseable reply"
+        }
+      ]
+    },
+    "nvidia/nemotron-3.5-lightning-30b-a3b": {
+      "keySlot": "A",
+      "credentialConfigured": true,
+      "scenarios": [
+        {
+          "scenario": "basic",
+          "ok": false,
+          "valid": false,
+          "legal": false,
+          "actionType": null,
+          "target": null,
+          "latencyMs": 55501,
+          "promptTokens": 429,
+          "completionTokens": 512,
+          "finishCapped": false,
+          "note": "unparseable reply"
+        },
+        {
+          "scenario": "shortage",
+          "ok": false,
+          "valid": false,
+          "legal": false,
+          "actionType": null,
+          "target": null,
+          "latencyMs": 40776,
+          "promptTokens": 429,
+          "completionTokens": 512,
+          "finishCapped": false,
+          "note": "unparseable reply"
+        },
+        {
+          "scenario": "depleted",
+          "ok": false,
+          "valid": false,
+          "legal": false,
+          "actionType": null,
+          "target": null,
+          "latencyMs": 47653,
+          "promptTokens": 447,
+          "completionTokens": 512,
+          "finishCapped": false,
+          "note": "unparseable reply"
+        },
+        {
+          "scenario": "recovery",
+          "ok": false,
+          "valid": false,
+          "legal": false,
+          "actionType": null,
+          "target": null,
+          "latencyMs": 22695,
+          "promptTokens": 454,
+          "completionTokens": 512,
+          "finishCapped": false,
+          "note": "unparseable reply"
+        }
+      ]
+    },
+    "poolside/laguna-xs-2.1": {
+      "keySlot": "A",
+      "credentialConfigured": true,
+      "scenarios": [
+        {
+          "scenario": "basic",
+          "ok": true,
+          "valid": true,
+          "legal": true,
+          "actionType": "GATHER",
+          "target": "tree-01",
+          "latencyMs": 1500,
+          "promptTokens": 428,
+          "completionTokens": 90,
+          "finishCapped": false,
+          "note": "legal GATHER tree-01"
+        },
+        {
+          "scenario": "shortage",
+          "ok": false,
+          "valid": true,
+          "legal": true,
+          "actionType": "GATHER",
+          "target": "tree-01",
+          "latencyMs": 1381,
+          "promptTokens": 428,
+          "completionTokens": 77,
+          "finishCapped": false,
+          "note": "legal GATHER tree-01 (expected HARVEST berry-patch-01 while food=0)"
+        },
+        {
+          "scenario": "depleted",
+          "ok": false,
+          "valid": true,
+          "legal": false,
+          "actionType": "GATHER",
+          "target": "tree-01",
+          "latencyMs": 6848,
+          "promptTokens": 446,
+          "completionTokens": 78,
+          "finishCapped": false,
+          "note": "illegal-target-state: GATHER is not legal against tree tree-01 in its current state. (proposed gathering in a fully depleted forest)"
+        },
+        {
+          "scenario": "recovery",
+          "ok": true,
+          "valid": true,
+          "legal": true,
+          "actionType": "GATHER",
+          "target": "tree-01",
+          "latencyMs": 26636,
+          "promptTokens": 452,
+          "completionTokens": 65,
+          "finishCapped": false,
+          "note": "legal GATHER tree-01"
+        }
+      ]
+    },
+    "nvidia/nemotron-3-ultra-550b-a55b": {
+      "keySlot": "A",
+      "credentialConfigured": true,
+      "scenarios": [
+        {
+          "scenario": "basic",
+          "ok": false,
+          "valid": false,
+          "legal": false,
+          "actionType": null,
+          "target": null,
+          "latencyMs": 120003,
+          "promptTokens": null,
+          "completionTokens": null,
+          "finishCapped": false,
+          "note": "provider failure: NIM request for nvidia/nemotron-3-ultra-550b-a55b timed out after 120000ms."
+        },
+        {
+          "scenario": "shortage",
+          "ok": true,
+          "valid": true,
+          "legal": true,
+          "actionType": "HARVEST",
+          "target": "berry-patch-01",
+          "latencyMs": 37366,
+          "promptTokens": 429,
+          "completionTokens": 574,
+          "finishCapped": false,
+          "note": "legal HARVEST berry-patch-01"
+        },
+        {
+          "scenario": "depleted",
+          "ok": false,
+          "valid": false,
+          "legal": false,
+          "actionType": null,
+          "target": null,
+          "latencyMs": 36617,
+          "promptTokens": 447,
+          "completionTokens": 1024,
+          "finishCapped": false,
+          "note": "unparseable reply"
+        },
+        {
+          "scenario": "recovery",
+          "ok": true,
+          "valid": true,
+          "legal": true,
+          "actionType": "GATHER",
+          "target": "tree-05",
+          "latencyMs": 21651,
+          "promptTokens": 454,
+          "completionTokens": 362,
+          "finishCapped": false,
+          "note": "legal GATHER tree-05"
+        }
+      ]
+    },
+    "z-ai/glm-5.3": {
+      "keySlot": "B",
+      "credentialConfigured": true,
+      "scenarios": [
+        {
+          "scenario": "basic",
+          "ok": true,
+          "valid": true,
+          "legal": true,
+          "actionType": "GATHER",
+          "target": "tree-04",
+          "latencyMs": 28602,
+          "promptTokens": 401,
+          "completionTokens": 782,
+          "finishCapped": false,
+          "note": "legal GATHER tree-04"
+        },
+        {
+          "scenario": "shortage",
+          "ok": true,
+          "valid": true,
+          "legal": true,
+          "actionType": "HARVEST",
+          "target": "berry-patch-01",
+          "latencyMs": 30349,
+          "promptTokens": 401,
+          "completionTokens": 324,
+          "finishCapped": false,
+          "note": "legal HARVEST berry-patch-01"
+        },
+        {
+          "scenario": "depleted",
+          "ok": false,
+          "valid": false,
+          "legal": false,
+          "actionType": null,
+          "target": null,
+          "latencyMs": 104212,
+          "promptTokens": 419,
+          "completionTokens": 1024,
+          "finishCapped": false,
+          "note": "unparseable reply"
+        },
+        {
+          "scenario": "recovery",
+          "ok": true,
+          "valid": true,
+          "legal": true,
+          "actionType": "GATHER",
+          "target": "tree-05",
+          "latencyMs": 62144,
+          "promptTokens": 423,
+          "completionTokens": 938,
+          "finishCapped": false,
+          "note": "legal GATHER tree-05"
+        }
+      ]
+    },
+    "z-ai/glm-5.3-flash": {
+      "keySlot": "B",
+      "credentialConfigured": true,
+      "scenarios": [
+        {
+          "scenario": "basic",
+          "ok": true,
+          "valid": true,
+          "legal": true,
+          "actionType": "GATHER",
+          "target": "tree-04",
+          "latencyMs": 138575,
+          "promptTokens": 401,
+          "completionTokens": 506,
+          "finishCapped": false,
+          "note": "legal GATHER tree-04"
+        },
+        {
+          "scenario": "shortage",
+          "ok": true,
+          "valid": true,
+          "legal": true,
+          "actionType": "HARVEST",
+          "target": "berry-patch-01",
+          "latencyMs": 147486,
+          "promptTokens": 401,
+          "completionTokens": 294,
+          "finishCapped": false,
+          "note": "legal HARVEST berry-patch-01"
+        },
+        {
+          "scenario": "depleted",
+          "ok": true,
+          "valid": true,
+          "legal": true,
+          "actionType": "HARVEST",
+          "target": "berry-patch-01",
+          "latencyMs": 171060,
+          "promptTokens": 419,
+          "completionTokens": 440,
+          "finishCapped": false,
+          "note": "legal HARVEST berry-patch-01"
+        },
+        {
+          "scenario": "recovery",
+          "ok": true,
+          "valid": true,
+          "legal": true,
+          "actionType": "GATHER",
+          "target": "tree-05",
+          "latencyMs": 137031,
+          "promptTokens": 423,
+          "completionTokens": 214,
+          "finishCapped": false,
+          "note": "legal GATHER tree-05"
+        }
+      ]
+    },
+    "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning": {
+      "keySlot": "B",
+      "credentialConfigured": true,
+      "scenarios": [
+        {
+          "scenario": "basic",
+          "ok": true,
+          "valid": true,
+          "legal": true,
+          "actionType": "GATHER",
+          "target": "tree-04",
+          "latencyMs": 20944,
+          "promptTokens": 429,
+          "completionTokens": 913,
+          "finishCapped": false,
+          "note": "legal GATHER tree-04"
+        },
+        {
+          "scenario": "shortage",
+          "ok": true,
+          "valid": true,
+          "legal": true,
+          "actionType": "HARVEST",
+          "target": "berry-patch-01",
+          "latencyMs": 11176,
+          "promptTokens": 429,
+          "completionTokens": 425,
+          "finishCapped": false,
+          "note": "legal HARVEST berry-patch-01"
+        },
+        {
+          "scenario": "depleted",
+          "ok": false,
+          "valid": true,
+          "legal": false,
+          "actionType": "GATHER",
+          "target": "tree-01",
+          "latencyMs": 7979,
+          "promptTokens": 447,
+          "completionTokens": 352,
+          "finishCapped": false,
+          "note": "illegal-target-state: GATHER is not legal against tree tree-01 in its current state. (proposed gathering in a fully depleted forest)"
+        },
+        {
+          "scenario": "recovery",
+          "ok": true,
+          "valid": true,
+          "legal": true,
+          "actionType": "GATHER",
+          "target": "tree-05",
+          "latencyMs": 13284,
+          "promptTokens": 454,
+          "completionTokens": 705,
+          "finishCapped": false,
+          "note": "legal GATHER tree-05"
+        }
+      ]
+    },
+    "google/gemma-4-31b-it": {
+      "keySlot": "B",
+      "credentialConfigured": true,
+      "scenarios": [
+        {
+          "scenario": "basic",
+          "ok": true,
+          "valid": true,
+          "legal": true,
+          "actionType": "GATHER",
+          "target": "tree-04",
+          "latencyMs": 88180,
+          "promptTokens": 428,
+          "completionTokens": 61,
+          "finishCapped": false,
+          "note": "legal GATHER tree-04"
+        },
+        {
+          "scenario": "shortage",
+          "ok": false,
+          "valid": false,
+          "legal": false,
+          "actionType": null,
+          "target": null,
+          "latencyMs": 180001,
+          "promptTokens": null,
+          "completionTokens": null,
+          "finishCapped": false,
+          "note": "provider failure: NIM request for google/gemma-4-31b-it timed out after 180000ms."
+        },
+        {
+          "scenario": "depleted",
+          "ok": false,
+          "valid": false,
+          "legal": false,
+          "actionType": null,
+          "target": null,
+          "latencyMs": 180001,
+          "promptTokens": null,
+          "completionTokens": null,
+          "finishCapped": false,
+          "note": "provider failure: NIM request for google/gemma-4-31b-it timed out after 180000ms."
+        },
+        {
+          "scenario": "recovery",
+          "ok": false,
+          "valid": false,
+          "legal": false,
+          "actionType": null,
+          "target": null,
+          "latencyMs": 180002,
+          "promptTokens": null,
+          "completionTokens": null,
+          "finishCapped": false,
+          "note": "provider failure: NIM request for google/gemma-4-31b-it timed out after 180000ms."
+        }
+      ]
+    },
+    "nvidia/nemotron-3-super-120b-a12b": {
+      "keySlot": "B",
+      "credentialConfigured": true,
+      "scenarios": [
+        {
+          "scenario": "basic",
+          "ok": true,
+          "valid": true,
+          "legal": true,
+          "actionType": "GATHER",
+          "target": "tree-04",
+          "latencyMs": 7230,
+          "promptTokens": 429,
+          "completionTokens": 764,
+          "finishCapped": false,
+          "note": "legal GATHER tree-04"
+        },
+        {
+          "scenario": "shortage",
+          "ok": false,
+          "valid": true,
+          "legal": true,
+          "actionType": "MOVE_TO",
+          "target": "berry-patch-01",
+          "latencyMs": 3419,
+          "promptTokens": 429,
+          "completionTokens": 332,
+          "finishCapped": false,
+          "note": "legal MOVE_TO berry-patch-01 (expected HARVEST berry-patch-01 while food=0)"
+        },
+        {
+          "scenario": "depleted",
+          "ok": true,
+          "valid": true,
+          "legal": true,
+          "actionType": "MOVE_TO",
+          "target": "tree-01",
+          "latencyMs": 8849,
+          "promptTokens": 447,
+          "completionTokens": 823,
+          "finishCapped": false,
+          "note": "legal MOVE_TO tree-01"
+        },
+        {
+          "scenario": "recovery",
+          "ok": true,
+          "valid": true,
+          "legal": true,
+          "actionType": "GATHER",
+          "target": "tree-05",
+          "latencyMs": 6266,
+          "promptTokens": 454,
+          "completionTokens": 923,
+          "finishCapped": false,
+          "note": "legal GATHER tree-05"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,51 @@
+module.exports = {
+  apps: [
+    {
+      name: 'astrix-vite',
+      cwd: '/home/ubuntu/astrix',
+      script: './node_modules/vite/bin/vite.js',
+      args: '--host 0.0.0.0 --port 5173 --strictPort',
+      interpreter: 'node',
+      autorestart: true,
+      max_restarts: 10,
+      restart_delay: 1000,
+      watch: false,
+      time: true,
+      env: {
+        NODE_ENV: 'development',
+      },
+    },
+    {
+      name: 'astrix-backend',
+      cwd: '/home/ubuntu/astrix',
+      script: './node_modules/tsx/dist/cli.mjs',
+      args: 'server/agent-server.ts',
+      interpreter: 'node',
+      node_args: '-r dotenv/config',
+      autorestart: true,
+      max_restarts: 10,
+      restart_delay: 2000,
+      watch: false,
+      time: true,
+      env: {
+        NODE_ENV: 'production',
+        DOTENV_CONFIG_PATH: '/home/ubuntu/astrix/.env',
+      },
+    },
+    {
+      name: 'astrix-trueforge',
+      cwd: '/home/ubuntu/astrix',
+      script: 'npx',
+      args: '-y @truefoundry/trueforge --port 8790',
+      interpreter: 'none',
+      autorestart: true,
+      max_restarts: 10,
+      restart_delay: 5000,
+      watch: false,
+      time: true,
+      env: {
+        NODE_ENV: 'production',
+      },
+    },
+  ],
+};

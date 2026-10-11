@@ -1,0 +1,564 @@
+{
+  "at": "2026-10-10T16:36:07.718Z",
+  "wallet": "2Rfq4UWFLmPhcKFbob1K2MbSCd4FkdwEnD7ycPM9HpR9",
+  "program": "Gd5DXjcDxr1jJFS2LBzoLkZvYsHZWhVwbYdQ7eZEKSdP",
+  "farm": "6c4r1tgdCoLw6FosBu9m4MyUmReXUWXKBj9zAvdKp6pq",
+  "steps": [
+    {
+      "step": "preflight-connect",
+      "ok": true,
+      "detail": "devnet + EU ER reachable"
+    },
+    {
+      "step": "preflight-program",
+      "ok": true,
+      "detail": "program Gd5DXjcDxr1jJFS2LBzoLkZvYsHZWhVwbYdQ7eZEKSdP executable"
+    },
+    {
+      "step": "preflight-farm-absent",
+      "ok": true,
+      "detail": "clean slate, no farm-01"
+    },
+    {
+      "step": "initialize-farm",
+      "ok": true,
+      "detail": "unbuilt/nonce-0 verified on base",
+      "signature": "3NAtLMMhWYRV97LZpp4GPnkZDzSsZWCoLeNRemuEK9FvxAeUHWcKWibQY2jzRnSLDsb69pS9CS4fuEXZaPyoiztt"
+    },
+    {
+      "step": "scenario-setup",
+      "ok": true,
+      "detail": "local stockpile set to exactly the governed cost (3)"
+    },
+    {
+      "step": "delegate-farm",
+      "ok": true,
+      "detail": "router delegation confirmed, ER state verified unbuilt",
+      "signature": "4pi791BUjWr48PVr6PHzQbKJatgVihp3x2AigWCneJUX1nTY2xGNsEMMrRdDzdVJorH9PYQHU5K3CCNW8e4FK1HR"
+    },
+    {
+      "step": "lease-to-er",
+      "ok": true,
+      "detail": "local writes surrendered at nonce 0"
+    },
+    {
+      "step": "propose",
+      "ok": true,
+      "detail": "proposal-0001 HIGH held for review (no auto-approval)"
+    },
+    {
+      "step": "approve",
+      "ok": true,
+      "detail": "human operator authorized this exact proposal"
+    },
+    {
+      "step": "er-build-verified",
+      "ok": true,
+      "detail": "built/nonce 1/wood 3 independently read from ER",
+      "signature": "4cZDxtQAWhH7Rb54UZWZWBCBLhdFdWFvkmi34mCwdHQExj6SKvLRUviK9aTZLbP2EKpQm26pbwZg5JjtzxZe7Rcx"
+    },
+    {
+      "step": "commit-verified",
+      "ok": true,
+      "detail": "base commit + base-account match confirmed (slot 509602760)"
+    },
+    {
+      "step": "no-premature-spend",
+      "ok": true,
+      "detail": "wood still 3, no farm-01 before reconciliation"
+    },
+    {
+      "step": "reconcile",
+      "ok": true,
+      "detail": "wood 3→0 deducted, farm-01 growing (ref 4cZDxtQAWhH7…)"
+    },
+    {
+      "step": "proposal-verified",
+      "ok": true,
+      "detail": "proposal-0001 EXECUTED→VERIFIED only after evidence"
+    },
+    {
+      "step": "reject-unauthorized",
+      "ok": true,
+      "detail": "stranger-signed build refused, verified state unchanged"
+    },
+    {
+      "step": "reject-replay-adapter",
+      "ok": true,
+      "detail": "VERIFIED proposal cannot re-authorize a second build"
+    },
+    {
+      "step": "reject-replay-program",
+      "ok": true,
+      "detail": "stale-nonce build refused on-chain"
+    },
+    {
+      "step": "reader-timeout-unknown",
+      "ok": true,
+      "detail": "slow read reported as unknown, not failure"
+    },
+    {
+      "step": "final-state",
+      "ok": true,
+      "detail": "built/nonce 1/wood 3, still delegated (hot for future reads)"
+    }
+  ],
+  "leases": {
+    "farm-01": {
+      "entityId": "farm-01",
+      "holder": "er",
+      "epoch": 1,
+      "nonceFloor": 1,
+      "lastVerifiedSlot": 509602760,
+      "stale": false
+    }
+  },
+  "localWood": 0,
+  "localFarm": {
+    "id": "farm-01",
+    "kind": "farm",
+    "position": {
+      "x": 2.5,
+      "z": 1.9
+    },
+    "state": "growing",
+    "progress": 0
+  },
+  "events": [
+    {
+      "sequence": 1,
+      "type": "ENTITY_SPAWNED",
+      "entityId": "settlement-01",
+      "data": {
+        "kind": "settlement",
+        "position": {
+          "x": 0,
+          "z": 0
+        }
+      }
+    },
+    {
+      "sequence": 2,
+      "type": "ENTITY_SPAWNED",
+      "entityId": "worker-01",
+      "data": {
+        "kind": "worker",
+        "position": {
+          "x": 2.4,
+          "z": -1
+        }
+      }
+    },
+    {
+      "sequence": 3,
+      "type": "ENTITY_SPAWNED",
+      "entityId": "worker-02",
+      "data": {
+        "kind": "worker",
+        "position": {
+          "x": 1.4,
+          "z": 1
+        }
+      }
+    },
+    {
+      "sequence": 4,
+      "type": "ENTITY_SPAWNED",
+      "entityId": "worker-03",
+      "data": {
+        "kind": "worker",
+        "position": {
+          "x": -1.2,
+          "z": 1.4
+        }
+      }
+    },
+    {
+      "sequence": 5,
+      "type": "ENTITY_SPAWNED",
+      "entityId": "tree-01",
+      "data": {
+        "kind": "tree",
+        "position": {
+          "x": -4.7,
+          "z": -2.6
+        }
+      }
+    },
+    {
+      "sequence": 6,
+      "type": "ENTITY_SPAWNED",
+      "entityId": "tree-02",
+      "data": {
+        "kind": "tree",
+        "position": {
+          "x": -6.4,
+          "z": 0.8
+        }
+      }
+    },
+    {
+      "sequence": 7,
+      "type": "ENTITY_SPAWNED",
+      "entityId": "tree-03",
+      "data": {
+        "kind": "tree",
+        "position": {
+          "x": -3.9,
+          "z": 3.4
+        }
+      }
+    },
+    {
+      "sequence": 8,
+      "type": "ENTITY_SPAWNED",
+      "entityId": "tree-04",
+      "data": {
+        "kind": "tree",
+        "position": {
+          "x": 5.1,
+          "z": -3.1
+        }
+      }
+    },
+    {
+      "sequence": 9,
+      "type": "ENTITY_SPAWNED",
+      "entityId": "tree-05",
+      "data": {
+        "kind": "tree",
+        "position": {
+          "x": 6.2,
+          "z": 0.6
+        }
+      }
+    },
+    {
+      "sequence": 10,
+      "type": "ENTITY_SPAWNED",
+      "entityId": "tree-06",
+      "data": {
+        "kind": "tree",
+        "position": {
+          "x": 4.5,
+          "z": 3.5
+        }
+      }
+    },
+    {
+      "sequence": 11,
+      "type": "ENTITY_SPAWNED",
+      "entityId": "berry-patch-01",
+      "data": {
+        "kind": "berry-patch",
+        "position": {
+          "x": -5.7,
+          "z": 3.6
+        }
+      }
+    },
+    {
+      "sequence": 12,
+      "type": "ENTITY_SPAWNED",
+      "entityId": "berry-patch-02",
+      "data": {
+        "kind": "berry-patch",
+        "position": {
+          "x": 5.8,
+          "z": 2.8
+        }
+      }
+    },
+    {
+      "sequence": 13,
+      "type": "WORLD_INITIALIZED",
+      "data": {
+        "treeCount": 6,
+        "berryPatchCount": 2,
+        "wood": 0,
+        "food": 3,
+        "workers": 3
+      }
+    },
+    {
+      "sequence": 14,
+      "type": "INTEGRATION_MODE_SELECTED",
+      "entityId": "farm-01",
+      "data": {
+        "mode": "magicblock-er",
+        "cluster": "devnet",
+        "solanaCore": "4.4.0-beta.0",
+        "erCore": "4.0.0",
+        "onChain": true
+      }
+    },
+    {
+      "sequence": 15,
+      "type": "MAGICBLOCK_EXECUTION_SUBMITTED",
+      "entityId": "farm-01",
+      "data": {
+        "operation": "initialize-farm",
+        "correlationId": "farm-01",
+        "signature": "3NAtLMMhWYRV97LZpp4GPnkZDzSsZWCoLeNRemuEK9FvxAeUHWcKWibQY2jzRnSLDsb69pS9CS4fuEXZaPyoiztt"
+      }
+    },
+    {
+      "sequence": 16,
+      "type": "MAGICBLOCK_EXECUTION_CONFIRMED",
+      "entityId": "farm-01",
+      "data": {
+        "operation": "initialize-farm",
+        "correlationId": "farm-01",
+        "signature": "3NAtLMMhWYRV97LZpp4GPnkZDzSsZWCoLeNRemuEK9FvxAeUHWcKWibQY2jzRnSLDsb69pS9CS4fuEXZaPyoiztt",
+        "slot": 509602747
+      }
+    },
+    {
+      "sequence": 17,
+      "type": "MAGICBLOCK_STATE_VERIFIED",
+      "entityId": "farm-01",
+      "data": {
+        "signature": "3NAtLMMhWYRV97LZpp4GPnkZDzSsZWCoLeNRemuEK9FvxAeUHWcKWibQY2jzRnSLDsb69pS9CS4fuEXZaPyoiztt",
+        "slot": 509602747,
+        "state": "unbuilt",
+        "nonce": 0,
+        "source": "solana-devnet"
+      }
+    },
+    {
+      "sequence": 18,
+      "type": "MAGICBLOCK_DELEGATION_REQUESTED",
+      "entityId": "farm-01",
+      "data": {
+        "state": "unbuilt",
+        "nonce": 0
+      }
+    },
+    {
+      "sequence": 19,
+      "type": "MAGICBLOCK_DELEGATION_REQUESTED",
+      "entityId": "farm-01",
+      "data": {
+        "operation": "delegate-farm",
+        "correlationId": "farm-01",
+        "signature": "4pi791BUjWr48PVr6PHzQbKJatgVihp3x2AigWCneJUX1nTY2xGNsEMMrRdDzdVJorH9PYQHU5K3CCNW8e4FK1HR"
+      }
+    },
+    {
+      "sequence": 20,
+      "type": "MAGICBLOCK_DELEGATION_CONFIRMED",
+      "entityId": "farm-01",
+      "data": {
+        "operation": "delegate-farm",
+        "correlationId": "farm-01",
+        "signature": "4pi791BUjWr48PVr6PHzQbKJatgVihp3x2AigWCneJUX1nTY2xGNsEMMrRdDzdVJorH9PYQHU5K3CCNW8e4FK1HR",
+        "slot": 509602753
+      }
+    },
+    {
+      "sequence": 21,
+      "type": "MAGICBLOCK_STATE_VERIFIED",
+      "entityId": "farm-01",
+      "data": {
+        "signature": "4pi791BUjWr48PVr6PHzQbKJatgVihp3x2AigWCneJUX1nTY2xGNsEMMrRdDzdVJorH9PYQHU5K3CCNW8e4FK1HR",
+        "slot": 509602753,
+        "state": "unbuilt",
+        "nonce": 0,
+        "source": "magicblock-er"
+      }
+    },
+    {
+      "sequence": 22,
+      "type": "LEASE_CHANGED",
+      "entityId": "farm-01",
+      "data": {
+        "holder": "er",
+        "epoch": 1,
+        "nonceFloor": 0
+      }
+    },
+    {
+      "sequence": 23,
+      "type": "ACTION_PROPOSED",
+      "entityId": "worker-01",
+      "data": {
+        "proposalId": "proposal-0001",
+        "actionType": "BUILD",
+        "targetEntityId": "settlement-01",
+        "riskLevel": "HIGH",
+        "structure": "farm",
+        "execution": "magicblock-er"
+      }
+    },
+    {
+      "sequence": 24,
+      "type": "ACTION_STATUS_CHANGED",
+      "entityId": "worker-01",
+      "data": {
+        "proposalId": "proposal-0001",
+        "status": "APPROVED"
+      }
+    },
+    {
+      "sequence": 25,
+      "type": "GOVERNANCE_PERMISSION_GRANTED",
+      "entityId": "worker-01",
+      "data": {
+        "proposalId": "proposal-0001",
+        "actionType": "BUILD",
+        "targetEntityId": "settlement-01",
+        "riskLevel": "HIGH",
+        "policy": "explicit-human-approval"
+      }
+    },
+    {
+      "sequence": 26,
+      "type": "MAGICBLOCK_EXECUTION_SUBMITTED",
+      "entityId": "farm-01",
+      "data": {
+        "operation": "farm-build",
+        "correlationId": "proposal-0001",
+        "signature": "4cZDxtQAWhH7Rb54UZWZWBCBLhdFdWFvkmi34mCwdHQExj6SKvLRUviK9aTZLbP2EKpQm26pbwZg5JjtzxZe7Rcx"
+      }
+    },
+    {
+      "sequence": 27,
+      "type": "MAGICBLOCK_EXECUTION_CONFIRMED",
+      "entityId": "farm-01",
+      "data": {
+        "operation": "farm-build",
+        "correlationId": "proposal-0001",
+        "signature": "4cZDxtQAWhH7Rb54UZWZWBCBLhdFdWFvkmi34mCwdHQExj6SKvLRUviK9aTZLbP2EKpQm26pbwZg5JjtzxZe7Rcx",
+        "slot": 759001849
+      }
+    },
+    {
+      "sequence": 28,
+      "type": "MAGICBLOCK_STATE_VERIFIED",
+      "entityId": "farm-01",
+      "data": {
+        "signature": "4cZDxtQAWhH7Rb54UZWZWBCBLhdFdWFvkmi34mCwdHQExj6SKvLRUviK9aTZLbP2EKpQm26pbwZg5JjtzxZe7Rcx",
+        "slot": 759001849,
+        "state": "built",
+        "nonce": 1,
+        "woodSpent": 3,
+        "source": "magicblock-er"
+      }
+    },
+    {
+      "sequence": 29,
+      "type": "ACTION_STATUS_CHANGED",
+      "entityId": "worker-01",
+      "data": {
+        "proposalId": "proposal-0001",
+        "status": "EXECUTED",
+        "execution": "magicblock-er",
+        "signature": "4cZDxtQAWhH7Rb54UZWZWBCBLhdFdWFvkmi34mCwdHQExj6SKvLRUviK9aTZLbP2EKpQm26pbwZg5JjtzxZe7Rcx"
+      }
+    },
+    {
+      "sequence": 30,
+      "type": "MAGICBLOCK_COMMIT_REQUESTED",
+      "entityId": "farm-01",
+      "data": {
+        "operation": "commit",
+        "actionId": "proposal-0001"
+      }
+    },
+    {
+      "sequence": 31,
+      "type": "MAGICBLOCK_EXECUTION_SUBMITTED",
+      "entityId": "farm-01",
+      "data": {
+        "operation": "commit-farm",
+        "correlationId": "proposal-0001",
+        "signature": "5Tj6X3UjKqQ6AfHD4Mv3zb6rckdfmHdwMR8gzsd3xr16AhTqkFmqfzqfsAyBmao2gfh2oGwjYoroWN6ZSskoKVGg"
+      }
+    },
+    {
+      "sequence": 32,
+      "type": "MAGICBLOCK_EXECUTION_CONFIRMED",
+      "entityId": "farm-01",
+      "data": {
+        "operation": "commit-farm",
+        "correlationId": "proposal-0001",
+        "signature": "5Tj6X3UjKqQ6AfHD4Mv3zb6rckdfmHdwMR8gzsd3xr16AhTqkFmqfzqfsAyBmao2gfh2oGwjYoroWN6ZSskoKVGg",
+        "slot": 759001873
+      }
+    },
+    {
+      "sequence": 33,
+      "type": "MAGICBLOCK_COMMIT_CONFIRMED",
+      "entityId": "farm-01",
+      "data": {
+        "erSignature": "5Tj6X3UjKqQ6AfHD4Mv3zb6rckdfmHdwMR8gzsd3xr16AhTqkFmqfzqfsAyBmao2gfh2oGwjYoroWN6ZSskoKVGg",
+        "settlementSignature": "36wvP1A9bBazVfVFyrR7QLSELuwq9cZzK3xSYGfZEuBA34Bx8mhy8nP2pX5Dedak9kssGj33eTfQVe5JGHdWBUfz",
+        "slot": 509602760
+      }
+    },
+    {
+      "sequence": 34,
+      "type": "MAGICBLOCK_BASE_STATE_VERIFIED",
+      "entityId": "farm-01",
+      "data": {
+        "signature": "36wvP1A9bBazVfVFyrR7QLSELuwq9cZzK3xSYGfZEuBA34Bx8mhy8nP2pX5Dedak9kssGj33eTfQVe5JGHdWBUfz",
+        "slot": 509602760,
+        "state": "built",
+        "nonce": 1,
+        "source": "solana-devnet-commit"
+      }
+    },
+    {
+      "sequence": 35,
+      "type": "ACTION_STATUS_CHANGED",
+      "entityId": "worker-01",
+      "data": {
+        "proposalId": "proposal-0001",
+        "status": "VERIFIED",
+        "execution": "magicblock-er",
+        "signature": "4cZDxtQAWhH7Rb54UZWZWBCBLhdFdWFvkmi34mCwdHQExj6SKvLRUviK9aTZLbP2EKpQm26pbwZg5JjtzxZe7Rcx",
+        "commitSignature": "36wvP1A9bBazVfVFyrR7QLSELuwq9cZzK3xSYGfZEuBA34Bx8mhy8nP2pX5Dedak9kssGj33eTfQVe5JGHdWBUfz"
+      }
+    },
+    {
+      "sequence": 36,
+      "type": "CONSTRUCTION_STARTED",
+      "entityId": "farm-01",
+      "data": {
+        "structureType": "farm",
+        "woodSpent": 3,
+        "reference": "4cZDxtQAWhH7Rb54UZWZWBCBLhdFdWFvkmi34mCwdHQExj6SKvLRUviK9aTZLbP2EKpQm26pbwZg5JjtzxZe7Rcx",
+        "source": "magicblock-verified"
+      }
+    },
+    {
+      "sequence": 37,
+      "type": "CONSTRUCTION_COMPLETED",
+      "entityId": "farm-01",
+      "data": {
+        "structureType": "farm",
+        "woodSpent": 3,
+        "reference": "4cZDxtQAWhH7Rb54UZWZWBCBLhdFdWFvkmi34mCwdHQExj6SKvLRUviK9aTZLbP2EKpQm26pbwZg5JjtzxZe7Rcx",
+        "source": "magicblock-verified"
+      }
+    },
+    {
+      "sequence": 38,
+      "type": "LOCAL_STATE_RECONCILED",
+      "entityId": "farm-01",
+      "data": {
+        "state": "growing",
+        "reference": "4cZDxtQAWhH7Rb54UZWZWBCBLhdFdWFvkmi34mCwdHQExj6SKvLRUviK9aTZLbP2EKpQm26pbwZg5JjtzxZe7Rcx"
+      }
+    },
+    {
+      "sequence": 39,
+      "type": "MAGICBLOCK_OPERATION_FAILED",
+      "entityId": "farm-01",
+      "data": {
+        "operation": "timed-read",
+        "error": "reader-timeout-status-unknown"
+      }
+    }
+  ]
+}

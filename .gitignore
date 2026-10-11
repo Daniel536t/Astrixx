@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dist-server/
+target/
+
+# Environment and secrets — never commit real credentials
+.env
+.env.local
+.env.*.local
+
+# TrueForge local runtime state (SQLite, sessions)
+.trueforge/
+trueforge-data/
+
+# Local Solana validator ledger and keypairs — never commit
+# (validator/faucet/stake/vote keypairs are private keys)
+test-ledger/
+
+# MagicBlock ephemeral-rollup local storage
+magicblock-test-storage/
+
+# Logs and OS artifacts
+*.log
+.DS_Store
+
+# Playwright browser binaries (if ever installed locally)
+.ms-playwright/

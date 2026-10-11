@@ -1,0 +1,15 @@
+{
+  "stage": "verified",
+  "screenshots": {
+    "initial": "artifacts/astrix-phase3-initial.png",
+    "fullSettlement": "artifacts/astrix-phase3-full-settlement.png",
+    "forest": "artifacts/astrix-phase3-forest.png",
+    "chopping": "artifacts/astrix-phase3-chopping.png",
+    "treeAfterChopping": "artifacts/astrix-phase3-tree-after-chopping.png",
+    "carryingWood": "artifacts/astrix-phase3-carrying-wood.png",
+    "berryHarvesting": "artifacts/astrix-phase3-berry-harvesting.png",
+    "carryingFood": "artifacts/astrix-phase3-carrying-food.png",
+    "finalSettlement": "artifacts/astrix-phase3-final-settlement.png",
+    "tablet": "artifacts/astrix-phase3-tablet.png"
+  }
+}

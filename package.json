@@ -1,0 +1,42 @@
+{
+  "name": "astrix-autonomous-world",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -b --pretty",
+    "test": "vitest run",
+    "verify:browser": "node scripts/verify-browser.mjs",
+    "verify:phase3": "node scripts/verify-phase3-browser.mjs",
+    "verify:crafting": "node scripts/verify-crafting-browser.mjs",
+    "verify:shelter": "node scripts/verify-shelter-browser.mjs",
+    "agent:server": "tsx server/agent-server.ts",
+    "mcp:server": "tsx server/mcp-server.ts",
+    "eval:models": "tsx scripts/eval-models.ts",
+    "serve:managed": "pm2 start ecosystem.config.cjs --only astrix-vite",
+    "serve:status": "pm2 status astrix-vite",
+    "serve:logs": "pm2 logs astrix-vite"
+  },
+  "dependencies": {
+    "@magicblock-labs/ephemeral-rollups-sdk": "^0.17.3",
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "@solana/web3.js": "^1.99.0",
+    "@truefoundry/trueforge-sdk": "^0.178.0",
+    "buffer": "^6.0.3",
+    "dotenv": "^18.0.7",
+    "three": "^0.180.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/three": "^0.180.0",
+    "playwright": "^1.64.0",
+    "pm2": "^7.0.4",
+    "tsx": "^4.23.15",
+    "typescript": "~5.9.3",
+    "vite": "^7.1.7",
+    "vitest": "^5.0.3"
+  }
+}

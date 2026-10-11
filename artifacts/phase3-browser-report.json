@@ -1,0 +1,122 @@
+{
+  "url": "http://127.0.0.1:5173/?e2e=1",
+  "mode": "LOCAL SIMULATION — no chain transactions",
+  "browser": "Playwright Chromium + SwiftShader WebGL",
+  "viewport": {
+    "desktop": {
+      "width": 1024,
+      "height": 768
+    },
+    "tablet": {
+      "width": 768,
+      "height": 1024
+    }
+  },
+  "canvas": {
+    "width": 607,
+    "height": 740,
+    "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)"
+  },
+  "cameraInteraction": true,
+  "pauseTick": "00:00",
+  "totals": {
+    "wood": 1,
+    "food": 1
+  },
+  "chainFarm": "delegated-harvested",
+  "woodEvents": [
+    "AGENT_OBSERVED",
+    "AGENT_DECIDED",
+    "ACTION_PROPOSED",
+    "GOVERNANCE_PERMISSION_GRANTED",
+    "RESOURCE_TARGETED",
+    "GATHER_ACTION_STARTED",
+    "TREE_DAMAGED",
+    "TREE_CHOPPED",
+    "RESOURCE_CREATED",
+    "AGENT_OBSERVED",
+    "RESOURCE_PICKED_UP",
+    "ACTION_PROPOSED",
+    "RESOURCE_DELIVERED",
+    "RESOURCE_ADDED",
+    "AGENT_OBSERVED",
+    "AGENT_OBSERVED"
+  ],
+  "foodEvents": [
+    "ENTITY_SPAWNED",
+    "ENTITY_SPAWNED",
+    "AGENT_OBSERVED",
+    "AGENT_OBSERVED",
+    "FOOD_CONSUMED",
+    "AGENT_OBSERVED",
+    "AGENT_DECIDED",
+    "ACTION_PROPOSED",
+    "GOVERNANCE_PERMISSION_GRANTED",
+    "RESOURCE_TARGETED",
+    "GATHER_ACTION_STARTED",
+    "FARM_HARVESTED",
+    "RESOURCE_CREATED",
+    "AGENT_OBSERVED",
+    "RESOURCE_PICKED_UP",
+    "ACTION_PROPOSED",
+    "RESOURCE_DELIVERED",
+    "RESOURCE_ADDED"
+  ],
+  "verifiedLocalProposals": [
+    {
+      "actionType": "GATHER",
+      "status": "VERIFIED"
+    },
+    {
+      "actionType": "PICK_UP",
+      "status": "VERIFIED"
+    },
+    {
+      "actionType": "DELIVER",
+      "status": "VERIFIED"
+    },
+    {
+      "actionType": "HARVEST",
+      "status": "VERIFIED"
+    },
+    {
+      "actionType": "PICK_UP",
+      "status": "VERIFIED"
+    },
+    {
+      "actionType": "DELIVER",
+      "status": "VERIFIED"
+    }
+  ],
+  "assetResponses": [
+    {
+      "url": "/assets/kenney-broadleaf.glb",
+      "status": 200
+    },
+    {
+      "url": "/assets/kenney-stump.glb",
+      "status": 200
+    },
+    {
+      "url": "/assets/kenney-oak.glb",
+      "status": 200
+    },
+    {
+      "url": "/assets/kenney-pine.glb",
+      "status": 200
+    }
+  ],
+  "browserErrors": [],
+  "screenshots": {
+    "initial": "artifacts/astrix-phase3-initial.png",
+    "fullSettlement": "artifacts/astrix-phase3-full-settlement.png",
+    "forest": "artifacts/astrix-phase3-forest.png",
+    "chopping": "artifacts/astrix-phase3-chopping.png",
+    "treeAfterChopping": "artifacts/astrix-phase3-tree-after-chopping.png",
+    "carryingWood": "artifacts/astrix-phase3-carrying-wood.png",
+    "berryHarvesting": "artifacts/astrix-phase3-berry-harvesting.png",
+    "carryingFood": "artifacts/astrix-phase3-carrying-food.png",
+    "finalSettlement": "artifacts/astrix-phase3-final-settlement.png",
+    "tablet": "artifacts/astrix-phase3-tablet.png"
+  }
+}

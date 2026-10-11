@@ -1,0 +1,121 @@
+{
+  "at": "2026-10-09T14:39:14.902Z",
+  "report": {
+    "poolside/laguna-xs-2.1": {
+      "keySlot": "A",
+      "credentialConfigured": true,
+      "scenarios": [
+        {
+          "scenario": "basic",
+          "ok": false,
+          "valid": false,
+          "legal": false,
+          "actionType": null,
+          "target": null,
+          "latencyMs": 60013,
+          "promptTokens": null,
+          "completionTokens": null,
+          "finishCapped": false,
+          "note": "provider failure: NIM request for poolside/laguna-xs-2.1 timed out after 60000ms."
+        },
+        {
+          "scenario": "shortage",
+          "ok": false,
+          "valid": true,
+          "legal": true,
+          "actionType": "GATHER",
+          "target": "tree-01",
+          "latencyMs": 45257,
+          "promptTokens": 428,
+          "completionTokens": 84,
+          "finishCapped": false,
+          "note": "legal GATHER tree-01 (expected HARVEST berry-patch-01 while food=0)"
+        },
+        {
+          "scenario": "depleted",
+          "ok": false,
+          "valid": true,
+          "legal": false,
+          "actionType": "GATHER",
+          "target": "tree-01",
+          "latencyMs": 56755,
+          "promptTokens": 446,
+          "completionTokens": 82,
+          "finishCapped": false,
+          "note": "illegal-target-state: GATHER is not legal against tree tree-01 in its current state. (proposed gathering in a fully depleted forest)"
+        },
+        {
+          "scenario": "recovery",
+          "ok": true,
+          "valid": true,
+          "legal": true,
+          "actionType": "GATHER",
+          "target": "tree-01",
+          "latencyMs": 1147,
+          "promptTokens": 452,
+          "completionTokens": 65,
+          "finishCapped": false,
+          "note": "legal GATHER tree-01"
+        }
+      ]
+    },
+    "nvidia/nemotron-3-super-120b-a12b": {
+      "keySlot": "B",
+      "credentialConfigured": true,
+      "scenarios": [
+        {
+          "scenario": "basic",
+          "ok": true,
+          "valid": true,
+          "legal": true,
+          "actionType": "GATHER",
+          "target": "tree-04",
+          "latencyMs": 6332,
+          "promptTokens": 429,
+          "completionTokens": 817,
+          "finishCapped": false,
+          "note": "legal GATHER tree-04"
+        },
+        {
+          "scenario": "shortage",
+          "ok": false,
+          "valid": true,
+          "legal": true,
+          "actionType": "MOVE_TO",
+          "target": "berry-patch-01",
+          "latencyMs": 3840,
+          "promptTokens": 429,
+          "completionTokens": 365,
+          "finishCapped": false,
+          "note": "legal MOVE_TO berry-patch-01 (expected HARVEST berry-patch-01 while food=0)"
+        },
+        {
+          "scenario": "depleted",
+          "ok": true,
+          "valid": true,
+          "legal": false,
+          "actionType": null,
+          "target": null,
+          "latencyMs": 4883,
+          "promptTokens": 447,
+          "completionTokens": 563,
+          "finishCapped": false,
+          "note": "explicit no-op"
+        },
+        {
+          "scenario": "recovery",
+          "ok": true,
+          "valid": true,
+          "legal": true,
+          "actionType": "GATHER",
+          "target": "tree-05",
+          "latencyMs": 5391,
+          "promptTokens": 454,
+          "completionTokens": 739,
+          "finishCapped": false,
+          "note": "legal GATHER tree-05"
+        }
+      ]
+    }
+  }
+}

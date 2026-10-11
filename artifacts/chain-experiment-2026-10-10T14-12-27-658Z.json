@@ -1,0 +1,1045 @@
+{
+  "at": "2026-10-10T14:12:27.659Z",
+  "wallet": "2Rfq4UWFLmPhcKFbob1K2MbSCd4FkdwEnD7ycPM9HpR9",
+  "program": "Gd5DXjcDxr1jJFS2LBzoLkZvYsHZWhVwbYdQ7eZEKSdP",
+  "counter": "Hp2RDjpe3b7xKqEUWtNJNMsUVzTnRQUep57VaLixjarM",
+  "steps": [
+    {
+      "step": "preflight-balance",
+      "ok": true,
+      "detail": "5.740 SOL devnet (need 3)"
+    },
+    {
+      "step": "preflight-endpoints",
+      "ok": true,
+      "detail": "devnet + EU ER router reachable"
+    },
+    {
+      "step": "deploy-program",
+      "ok": true,
+      "detail": "already executable on devnet (skipped redeploy)"
+    },
+    {
+      "step": "initialize-counter",
+      "ok": true,
+      "detail": "counter PDA already exists (skipped re-init)"
+    },
+    {
+      "step": "delegate-counter",
+      "ok": true,
+      "detail": "router delegation confirmed",
+      "signature": "4GSJWAbS6eUCCQKAQUcm1nniAf7XV5WKDwLVXUuVhV5SoziwVCx4Bjh8j6WtGk9sgyXunseMqXKcYmoz2yDmt4ua"
+    },
+    {
+      "step": "lease-to-er",
+      "ok": true,
+      "detail": "local sim surrendered authoritative writes for count-01"
+    },
+    {
+      "step": "hot-increment-1",
+      "ok": true,
+      "detail": "count=1 nonce=1 slot=758139312",
+      "signature": "5qXV16JfXfciUV5DmRgjJ51cTw9gvADFQ22bjfAmWGTefnRdf6zhTzmZ496cfwjswdvXsTLADC2rX4m2H6p1A3b7"
+    },
+    {
+      "step": "hot-increment-2",
+      "ok": true,
+      "detail": "count=2 nonce=2 slot=758139344",
+      "signature": "4MBn9DwgZmY7khMdbzZTy4RXHuoVQH3QtwSvRLti95kexf669t4ovo1XPB9TLx4RV1Tq7LkyaFncMJ6Wdvesipa7"
+    },
+    {
+      "step": "hot-increment-3",
+      "ok": true,
+      "detail": "count=3 nonce=3 slot=758139372",
+      "signature": "4dMcWiugcGNvhx9rSNc7GTMhRK6n7K1Zvc69NKjCfNhSR2SJc8a4b2gjamYn8EP85UeBTnP58oaBCEjr9hy7soQg"
+    },
+    {
+      "step": "hot-increment-4",
+      "ok": true,
+      "detail": "count=4 nonce=4 slot=758139394",
+      "signature": "2oXbH8yZY9aD6Hqe6VpHLHPtvtqHDm7Ny8Aba9Bo5TpXkFrTqoEteTm9BaoYCubPxkMPH3ea61MG3GPpdspc5yeQ"
+    },
+    {
+      "step": "hot-increment-5",
+      "ok": true,
+      "detail": "count=5 nonce=5 slot=758139416",
+      "signature": "4zoX1w27SNKiMXeSWsmrKJKsPj4jsn6cN6thLmWhigxM4xQGnQSt9jsdYwm9kbaDZ2ifbAzihSH95DbZHvDN13b4"
+    },
+    {
+      "step": "reject-unauthorized",
+      "ok": true,
+      "detail": "stranger increment refused, nonce unchanged"
+    },
+    {
+      "step": "reject-replay",
+      "ok": true,
+      "detail": "stale-nonce resubmission refused before submit"
+    },
+    {
+      "step": "reader-timeout-unknown",
+      "ok": true,
+      "detail": "slow read reported as unknown, not as failure"
+    },
+    {
+      "step": "partition-separation",
+      "ok": true,
+      "detail": "authoritative nonce 5 untouched by 3 speculative records"
+    },
+    {
+      "step": "partition-marked-stale",
+      "ok": true,
+      "detail": "last verified counter shown stale, not fresh"
+    },
+    {
+      "step": "reconnect-resolution",
+      "ok": true,
+      "detail": "3/3 speculative records resolved no-merge against nonce 5"
+    },
+    {
+      "step": "no-silent-merge",
+      "ok": true,
+      "detail": "authoritative count unchanged by speculation"
+    },
+    {
+      "step": "commit-and-undelegate",
+      "ok": true,
+      "detail": "base count=5 nonce=5",
+      "signature": "3RjNP3gvJGJiiJ8km5WsnLJnFrrFJm5AgdhBYfb2pKLmDbspkGDWY6MBDZLyvUjAVd4H69hiFx87LfPKC4zyiqGY"
+    },
+    {
+      "step": "lease-home",
+      "ok": true,
+      "detail": "local sim resumes authoritative writes after undelegation"
+    }
+  ],
+  "leases": {
+    "count-01": {
+      "entityId": "count-01",
+      "holder": "local",
+      "epoch": 2,
+      "nonceFloor": 5,
+      "lastVerifiedSlot": 758139416,
+      "stale": false
+    }
+  },
+  "speculative": [
+    {
+      "id": "spec-001",
+      "entityId": "count-01",
+      "kind": "offline-increment",
+      "notedAt": 0,
+      "detail": "partition minute 1: operator counts ahead locally",
+      "resolution": "discarded-held-for-review"
+    },
+    {
+      "id": "spec-002",
+      "entityId": "count-01",
+      "kind": "offline-increment",
+      "notedAt": 0,
+      "detail": "partition minute 2: operator counts ahead locally",
+      "resolution": "discarded-held-for-review"
+    },
+    {
+      "id": "spec-003",
+      "entityId": "count-01",
+      "kind": "offline-increment",
+      "notedAt": 0,
+      "detail": "partition minute 3: operator counts ahead locally",
+      "resolution": "discarded-held-for-review"
+    }
+  ],
+  "events": [
+    {
+      "sequence": 1,
+      "type": "ENTITY_SPAWNED",
+      "entityId": "settlement-01",
+      "data": {
+        "kind": "settlement",
+        "position": {
+          "x": 0,
+          "z": 0
+        }
+      }
+    },
+    {
+      "sequence": 2,
+      "type": "ENTITY_SPAWNED",
+      "entityId": "worker-01",
+      "data": {
+        "kind": "worker",
+        "position": {
+          "x": 2.4,
+          "z": -1
+        }
+      }
+    },
+    {
+      "sequence": 3,
+      "type": "ENTITY_SPAWNED",
+      "entityId": "worker-02",
+      "data": {
+        "kind": "worker",
+        "position": {
+          "x": 1.4,
+          "z": 1
+        }
+      }
+    },
+    {
+      "sequence": 4,
+      "type": "ENTITY_SPAWNED",
+      "entityId": "worker-03",
+      "data": {
+        "kind": "worker",
+        "position": {
+          "x": -1.2,
+          "z": 1.4
+        }
+      }
+    },
+    {
+      "sequence": 5,
+      "type": "ENTITY_SPAWNED",
+      "entityId": "tree-01",
+      "data": {
+        "kind": "tree",
+        "position": {
+          "x": -4.7,
+          "z": -2.6
+        }
+      }
+    },
+    {
+      "sequence": 6,
+      "type": "ENTITY_SPAWNED",
+      "entityId": "tree-02",
+      "data": {
+        "kind": "tree",
+        "position": {
+          "x": -6.4,
+          "z": 0.8
+        }
+      }
+    },
+    {
+      "sequence": 7,
+      "type": "ENTITY_SPAWNED",
+      "entityId": "tree-03",
+      "data": {
+        "kind": "tree",
+        "position": {
+          "x": -3.9,
+          "z": 3.4
+        }
+      }
+    },
+    {
+      "sequence": 8,
+      "type": "ENTITY_SPAWNED",
+      "entityId": "tree-04",
+      "data": {
+        "kind": "tree",
+        "position": {
+          "x": 5.1,
+          "z": -3.1
+        }
+      }
+    },
+    {
+      "sequence": 9,
+      "type": "ENTITY_SPAWNED",
+      "entityId": "tree-05",
+      "data": {
+        "kind": "tree",
+        "position": {
+          "x": 6.2,
+          "z": 0.6
+        }
+      }
+    },
+    {
+      "sequence": 10,
+      "type": "ENTITY_SPAWNED",
+      "entityId": "tree-06",
+      "data": {
+        "kind": "tree",
+        "position": {
+          "x": 4.5,
+          "z": 3.5
+        }
+      }
+    },
+    {
+      "sequence": 11,
+      "type": "ENTITY_SPAWNED",
+      "entityId": "berry-patch-01",
+      "data": {
+        "kind": "berry-patch",
+        "position": {
+          "x": -5.7,
+          "z": 3.6
+        }
+      }
+    },
+    {
+      "sequence": 12,
+      "type": "ENTITY_SPAWNED",
+      "entityId": "berry-patch-02",
+      "data": {
+        "kind": "berry-patch",
+        "position": {
+          "x": 5.8,
+          "z": 2.8
+        }
+      }
+    },
+    {
+      "sequence": 13,
+      "type": "WORLD_INITIALIZED",
+      "data": {
+        "treeCount": 6,
+        "berryPatchCount": 2,
+        "wood": 0,
+        "food": 3,
+        "workers": 3
+      }
+    },
+    {
+      "sequence": 14,
+      "type": "INTEGRATION_MODE_SELECTED",
+      "entityId": "count-01",
+      "data": {
+        "mode": "magicblock-er",
+        "cluster": "devnet",
+        "baseCore": "4.4.0-beta.0",
+        "erCore": "4.0.0",
+        "onChain": true
+      }
+    },
+    {
+      "sequence": 15,
+      "type": "MAGICBLOCK_DELEGATION_REQUESTED",
+      "entityId": "count-01",
+      "data": {
+        "count": 0,
+        "nonce": 0
+      }
+    },
+    {
+      "sequence": 16,
+      "type": "MAGICBLOCK_EXECUTION_SUBMITTED",
+      "entityId": "count-01",
+      "data": {
+        "operation": "delegate-counter",
+        "correlationId": "count-01",
+        "signature": "4GSJWAbS6eUCCQKAQUcm1nniAf7XV5WKDwLVXUuVhV5SoziwVCx4Bjh8j6WtGk9sgyXunseMqXKcYmoz2yDmt4ua"
+      }
+    },
+    {
+      "sequence": 17,
+      "type": "MAGICBLOCK_EXECUTION_CONFIRMED",
+      "entityId": "count-01",
+      "data": {
+        "operation": "delegate-counter",
+        "correlationId": "count-01",
+        "signature": "4GSJWAbS6eUCCQKAQUcm1nniAf7XV5WKDwLVXUuVhV5SoziwVCx4Bjh8j6WtGk9sgyXunseMqXKcYmoz2yDmt4ua",
+        "slot": 509566805
+      }
+    },
+    {
+      "sequence": 18,
+      "type": "MAGICBLOCK_DELEGATION_CONFIRMED",
+      "entityId": "count-01",
+      "data": {
+        "signature": "4GSJWAbS6eUCCQKAQUcm1nniAf7XV5WKDwLVXUuVhV5SoziwVCx4Bjh8j6WtGk9sgyXunseMqXKcYmoz2yDmt4ua",
+        "slot": 509566805
+      }
+    },
+    {
+      "sequence": 19,
+      "type": "MAGICBLOCK_STATE_VERIFIED",
+      "entityId": "count-01",
+      "data": {
+        "signature": "4GSJWAbS6eUCCQKAQUcm1nniAf7XV5WKDwLVXUuVhV5SoziwVCx4Bjh8j6WtGk9sgyXunseMqXKcYmoz2yDmt4ua",
+        "slot": 509566805,
+        "count": 0,
+        "nonce": 0,
+        "source": "magicblock-er"
+      }
+    },
+    {
+      "sequence": 20,
+      "type": "LEASE_CHANGED",
+      "entityId": "count-01",
+      "data": {
+        "holder": "er",
+        "epoch": 1,
+        "nonceFloor": 0
+      }
+    },
+    {
+      "sequence": 21,
+      "type": "ACTION_PROPOSED",
+      "entityId": "worker-01",
+      "data": {
+        "proposalId": "proposal-0001",
+        "actionType": "MOVE_TO",
+        "targetEntityId": "count-01",
+        "riskLevel": "HIGH",
+        "execution": "magicblock-er",
+        "round": 1,
+        "purpose": "chain-increment"
+      }
+    },
+    {
+      "sequence": 22,
+      "type": "ACTION_STATUS_CHANGED",
+      "entityId": "worker-01",
+      "data": {
+        "proposalId": "proposal-0001",
+        "status": "APPROVED"
+      }
+    },
+    {
+      "sequence": 23,
+      "type": "GOVERNANCE_PERMISSION_GRANTED",
+      "entityId": "worker-01",
+      "data": {
+        "proposalId": "proposal-0001",
+        "actionType": "MOVE_TO",
+        "targetEntityId": "count-01",
+        "riskLevel": "HIGH",
+        "policy": "explicit-human-approval"
+      }
+    },
+    {
+      "sequence": 24,
+      "type": "MAGICBLOCK_EXECUTION_SUBMITTED",
+      "entityId": "count-01",
+      "data": {
+        "operation": "counter-increment",
+        "correlationId": "proposal-0001",
+        "signature": "5qXV16JfXfciUV5DmRgjJ51cTw9gvADFQ22bjfAmWGTefnRdf6zhTzmZ496cfwjswdvXsTLADC2rX4m2H6p1A3b7"
+      }
+    },
+    {
+      "sequence": 25,
+      "type": "MAGICBLOCK_EXECUTION_CONFIRMED",
+      "entityId": "count-01",
+      "data": {
+        "operation": "counter-increment",
+        "correlationId": "proposal-0001",
+        "signature": "5qXV16JfXfciUV5DmRgjJ51cTw9gvADFQ22bjfAmWGTefnRdf6zhTzmZ496cfwjswdvXsTLADC2rX4m2H6p1A3b7",
+        "slot": 758139312
+      }
+    },
+    {
+      "sequence": 26,
+      "type": "MAGICBLOCK_STATE_VERIFIED",
+      "entityId": "count-01",
+      "data": {
+        "signature": "5qXV16JfXfciUV5DmRgjJ51cTw9gvADFQ22bjfAmWGTefnRdf6zhTzmZ496cfwjswdvXsTLADC2rX4m2H6p1A3b7",
+        "slot": 758139312,
+        "count": 1,
+        "nonce": 1,
+        "source": "magicblock-er"
+      }
+    },
+    {
+      "sequence": 27,
+      "type": "ACTION_STATUS_CHANGED",
+      "entityId": "worker-01",
+      "data": {
+        "proposalId": "proposal-0001",
+        "status": "EXECUTED",
+        "execution": "magicblock-er",
+        "signature": "5qXV16JfXfciUV5DmRgjJ51cTw9gvADFQ22bjfAmWGTefnRdf6zhTzmZ496cfwjswdvXsTLADC2rX4m2H6p1A3b7"
+      }
+    },
+    {
+      "sequence": 28,
+      "type": "ACTION_STATUS_CHANGED",
+      "entityId": "worker-01",
+      "data": {
+        "proposalId": "proposal-0001",
+        "status": "VERIFIED",
+        "execution": "magicblock-er",
+        "signature": "5qXV16JfXfciUV5DmRgjJ51cTw9gvADFQ22bjfAmWGTefnRdf6zhTzmZ496cfwjswdvXsTLADC2rX4m2H6p1A3b7"
+      }
+    },
+    {
+      "sequence": 29,
+      "type": "ACTION_PROPOSED",
+      "entityId": "worker-01",
+      "data": {
+        "proposalId": "proposal-0002",
+        "actionType": "MOVE_TO",
+        "targetEntityId": "count-01",
+        "riskLevel": "HIGH",
+        "execution": "magicblock-er",
+        "round": 2,
+        "purpose": "chain-increment"
+      }
+    },
+    {
+      "sequence": 30,
+      "type": "ACTION_STATUS_CHANGED",
+      "entityId": "worker-01",
+      "data": {
+        "proposalId": "proposal-0002",
+        "status": "APPROVED"
+      }
+    },
+    {
+      "sequence": 31,
+      "type": "GOVERNANCE_PERMISSION_GRANTED",
+      "entityId": "worker-01",
+      "data": {
+        "proposalId": "proposal-0002",
+        "actionType": "MOVE_TO",
+        "targetEntityId": "count-01",
+        "riskLevel": "HIGH",
+        "policy": "explicit-human-approval"
+      }
+    },
+    {
+      "sequence": 32,
+      "type": "MAGICBLOCK_EXECUTION_SUBMITTED",
+      "entityId": "count-01",
+      "data": {
+        "operation": "counter-increment",
+        "correlationId": "proposal-0002",
+        "signature": "4MBn9DwgZmY7khMdbzZTy4RXHuoVQH3QtwSvRLti95kexf669t4ovo1XPB9TLx4RV1Tq7LkyaFncMJ6Wdvesipa7"
+      }
+    },
+    {
+      "sequence": 33,
+      "type": "MAGICBLOCK_EXECUTION_CONFIRMED",
+      "entityId": "count-01",
+      "data": {
+        "operation": "counter-increment",
+        "correlationId": "proposal-0002",
+        "signature": "4MBn9DwgZmY7khMdbzZTy4RXHuoVQH3QtwSvRLti95kexf669t4ovo1XPB9TLx4RV1Tq7LkyaFncMJ6Wdvesipa7",
+        "slot": 758139344
+      }
+    },
+    {
+      "sequence": 34,
+      "type": "MAGICBLOCK_STATE_VERIFIED",
+      "entityId": "count-01",
+      "data": {
+        "signature": "4MBn9DwgZmY7khMdbzZTy4RXHuoVQH3QtwSvRLti95kexf669t4ovo1XPB9TLx4RV1Tq7LkyaFncMJ6Wdvesipa7",
+        "slot": 758139344,
+        "count": 2,
+        "nonce": 2,
+        "source": "magicblock-er"
+      }
+    },
+    {
+      "sequence": 35,
+      "type": "ACTION_STATUS_CHANGED",
+      "entityId": "worker-01",
+      "data": {
+        "proposalId": "proposal-0002",
+        "status": "EXECUTED",
+        "execution": "magicblock-er",
+        "signature": "4MBn9DwgZmY7khMdbzZTy4RXHuoVQH3QtwSvRLti95kexf669t4ovo1XPB9TLx4RV1Tq7LkyaFncMJ6Wdvesipa7"
+      }
+    },
+    {
+      "sequence": 36,
+      "type": "ACTION_STATUS_CHANGED",
+      "entityId": "worker-01",
+      "data": {
+        "proposalId": "proposal-0002",
+        "status": "VERIFIED",
+        "execution": "magicblock-er",
+        "signature": "4MBn9DwgZmY7khMdbzZTy4RXHuoVQH3QtwSvRLti95kexf669t4ovo1XPB9TLx4RV1Tq7LkyaFncMJ6Wdvesipa7"
+      }
+    },
+    {
+      "sequence": 37,
+      "type": "ACTION_PROPOSED",
+      "entityId": "worker-01",
+      "data": {
+        "proposalId": "proposal-0003",
+        "actionType": "MOVE_TO",
+        "targetEntityId": "count-01",
+        "riskLevel": "HIGH",
+        "execution": "magicblock-er",
+        "round": 3,
+        "purpose": "chain-increment"
+      }
+    },
+    {
+      "sequence": 38,
+      "type": "ACTION_STATUS_CHANGED",
+      "entityId": "worker-01",
+      "data": {
+        "proposalId": "proposal-0003",
+        "status": "APPROVED"
+      }
+    },
+    {
+      "sequence": 39,
+      "type": "GOVERNANCE_PERMISSION_GRANTED",
+      "entityId": "worker-01",
+      "data": {
+        "proposalId": "proposal-0003",
+        "actionType": "MOVE_TO",
+        "targetEntityId": "count-01",
+        "riskLevel": "HIGH",
+        "policy": "explicit-human-approval"
+      }
+    },
+    {
+      "sequence": 40,
+      "type": "MAGICBLOCK_EXECUTION_SUBMITTED",
+      "entityId": "count-01",
+      "data": {
+        "operation": "counter-increment",
+        "correlationId": "proposal-0003",
+        "signature": "4dMcWiugcGNvhx9rSNc7GTMhRK6n7K1Zvc69NKjCfNhSR2SJc8a4b2gjamYn8EP85UeBTnP58oaBCEjr9hy7soQg"
+      }
+    },
+    {
+      "sequence": 41,
+      "type": "MAGICBLOCK_EXECUTION_CONFIRMED",
+      "entityId": "count-01",
+      "data": {
+        "operation": "counter-increment",
+        "correlationId": "proposal-0003",
+        "signature": "4dMcWiugcGNvhx9rSNc7GTMhRK6n7K1Zvc69NKjCfNhSR2SJc8a4b2gjamYn8EP85UeBTnP58oaBCEjr9hy7soQg",
+        "slot": 758139372
+      }
+    },
+    {
+      "sequence": 42,
+      "type": "MAGICBLOCK_STATE_VERIFIED",
+      "entityId": "count-01",
+      "data": {
+        "signature": "4dMcWiugcGNvhx9rSNc7GTMhRK6n7K1Zvc69NKjCfNhSR2SJc8a4b2gjamYn8EP85UeBTnP58oaBCEjr9hy7soQg",
+        "slot": 758139372,
+        "count": 3,
+        "nonce": 3,
+        "source": "magicblock-er"
+      }
+    },
+    {
+      "sequence": 43,
+      "type": "ACTION_STATUS_CHANGED",
+      "entityId": "worker-01",
+      "data": {
+        "proposalId": "proposal-0003",
+        "status": "EXECUTED",
+        "execution": "magicblock-er",
+        "signature": "4dMcWiugcGNvhx9rSNc7GTMhRK6n7K1Zvc69NKjCfNhSR2SJc8a4b2gjamYn8EP85UeBTnP58oaBCEjr9hy7soQg"
+      }
+    },
+    {
+      "sequence": 44,
+      "type": "ACTION_STATUS_CHANGED",
+      "entityId": "worker-01",
+      "data": {
+        "proposalId": "proposal-0003",
+        "status": "VERIFIED",
+        "execution": "magicblock-er",
+        "signature": "4dMcWiugcGNvhx9rSNc7GTMhRK6n7K1Zvc69NKjCfNhSR2SJc8a4b2gjamYn8EP85UeBTnP58oaBCEjr9hy7soQg"
+      }
+    },
+    {
+      "sequence": 45,
+      "type": "ACTION_PROPOSED",
+      "entityId": "worker-01",
+      "data": {
+        "proposalId": "proposal-0004",
+        "actionType": "MOVE_TO",
+        "targetEntityId": "count-01",
+        "riskLevel": "HIGH",
+        "execution": "magicblock-er",
+        "round": 4,
+        "purpose": "chain-increment"
+      }
+    },
+    {
+      "sequence": 46,
+      "type": "ACTION_STATUS_CHANGED",
+      "entityId": "worker-01",
+      "data": {
+        "proposalId": "proposal-0004",
+        "status": "APPROVED"
+      }
+    },
+    {
+      "sequence": 47,
+      "type": "GOVERNANCE_PERMISSION_GRANTED",
+      "entityId": "worker-01",
+      "data": {
+        "proposalId": "proposal-0004",
+        "actionType": "MOVE_TO",
+        "targetEntityId": "count-01",
+        "riskLevel": "HIGH",
+        "policy": "explicit-human-approval"
+      }
+    },
+    {
+      "sequence": 48,
+      "type": "MAGICBLOCK_EXECUTION_SUBMITTED",
+      "entityId": "count-01",
+      "data": {
+        "operation": "counter-increment",
+        "correlationId": "proposal-0004",
+        "signature": "2oXbH8yZY9aD6Hqe6VpHLHPtvtqHDm7Ny8Aba9Bo5TpXkFrTqoEteTm9BaoYCubPxkMPH3ea61MG3GPpdspc5yeQ"
+      }
+    },
+    {
+      "sequence": 49,
+      "type": "MAGICBLOCK_EXECUTION_CONFIRMED",
+      "entityId": "count-01",
+      "data": {
+        "operation": "counter-increment",
+        "correlationId": "proposal-0004",
+        "signature": "2oXbH8yZY9aD6Hqe6VpHLHPtvtqHDm7Ny8Aba9Bo5TpXkFrTqoEteTm9BaoYCubPxkMPH3ea61MG3GPpdspc5yeQ",
+        "slot": 758139394
+      }
+    },
+    {
+      "sequence": 50,
+      "type": "MAGICBLOCK_STATE_VERIFIED",
+      "entityId": "count-01",
+      "data": {
+        "signature": "2oXbH8yZY9aD6Hqe6VpHLHPtvtqHDm7Ny8Aba9Bo5TpXkFrTqoEteTm9BaoYCubPxkMPH3ea61MG3GPpdspc5yeQ",
+        "slot": 758139394,
+        "count": 4,
+        "nonce": 4,
+        "source": "magicblock-er"
+      }
+    },
+    {
+      "sequence": 51,
+      "type": "ACTION_STATUS_CHANGED",
+      "entityId": "worker-01",
+      "data": {
+        "proposalId": "proposal-0004",
+        "status": "EXECUTED",
+        "execution": "magicblock-er",
+        "signature": "2oXbH8yZY9aD6Hqe6VpHLHPtvtqHDm7Ny8Aba9Bo5TpXkFrTqoEteTm9BaoYCubPxkMPH3ea61MG3GPpdspc5yeQ"
+      }
+    },
+    {
+      "sequence": 52,
+      "type": "ACTION_STATUS_CHANGED",
+      "entityId": "worker-01",
+      "data": {
+        "proposalId": "proposal-0004",
+        "status": "VERIFIED",
+        "execution": "magicblock-er",
+        "signature": "2oXbH8yZY9aD6Hqe6VpHLHPtvtqHDm7Ny8Aba9Bo5TpXkFrTqoEteTm9BaoYCubPxkMPH3ea61MG3GPpdspc5yeQ"
+      }
+    },
+    {
+      "sequence": 53,
+      "type": "ACTION_PROPOSED",
+      "entityId": "worker-01",
+      "data": {
+        "proposalId": "proposal-0005",
+        "actionType": "MOVE_TO",
+        "targetEntityId": "count-01",
+        "riskLevel": "HIGH",
+        "execution": "magicblock-er",
+        "round": 5,
+        "purpose": "chain-increment"
+      }
+    },
+    {
+      "sequence": 54,
+      "type": "ACTION_STATUS_CHANGED",
+      "entityId": "worker-01",
+      "data": {
+        "proposalId": "proposal-0005",
+        "status": "APPROVED"
+      }
+    },
+    {
+      "sequence": 55,
+      "type": "GOVERNANCE_PERMISSION_GRANTED",
+      "entityId": "worker-01",
+      "data": {
+        "proposalId": "proposal-0005",
+        "actionType": "MOVE_TO",
+        "targetEntityId": "count-01",
+        "riskLevel": "HIGH",
+        "policy": "explicit-human-approval"
+      }
+    },
+    {
+      "sequence": 56,
+      "type": "MAGICBLOCK_EXECUTION_SUBMITTED",
+      "entityId": "count-01",
+      "data": {
+        "operation": "counter-increment",
+        "correlationId": "proposal-0005",
+        "signature": "4zoX1w27SNKiMXeSWsmrKJKsPj4jsn6cN6thLmWhigxM4xQGnQSt9jsdYwm9kbaDZ2ifbAzihSH95DbZHvDN13b4"
+      }
+    },
+    {
+      "sequence": 57,
+      "type": "MAGICBLOCK_EXECUTION_CONFIRMED",
+      "entityId": "count-01",
+      "data": {
+        "operation": "counter-increment",
+        "correlationId": "proposal-0005",
+        "signature": "4zoX1w27SNKiMXeSWsmrKJKsPj4jsn6cN6thLmWhigxM4xQGnQSt9jsdYwm9kbaDZ2ifbAzihSH95DbZHvDN13b4",
+        "slot": 758139416
+      }
+    },
+    {
+      "sequence": 58,
+      "type": "MAGICBLOCK_STATE_VERIFIED",
+      "entityId": "count-01",
+      "data": {
+        "signature": "4zoX1w27SNKiMXeSWsmrKJKsPj4jsn6cN6thLmWhigxM4xQGnQSt9jsdYwm9kbaDZ2ifbAzihSH95DbZHvDN13b4",
+        "slot": 758139416,
+        "count": 5,
+        "nonce": 5,
+        "source": "magicblock-er"
+      }
+    },
+    {
+      "sequence": 59,
+      "type": "ACTION_STATUS_CHANGED",
+      "entityId": "worker-01",
+      "data": {
+        "proposalId": "proposal-0005",
+        "status": "EXECUTED",
+        "execution": "magicblock-er",
+        "signature": "4zoX1w27SNKiMXeSWsmrKJKsPj4jsn6cN6thLmWhigxM4xQGnQSt9jsdYwm9kbaDZ2ifbAzihSH95DbZHvDN13b4"
+      }
+    },
+    {
+      "sequence": 60,
+      "type": "ACTION_STATUS_CHANGED",
+      "entityId": "worker-01",
+      "data": {
+        "proposalId": "proposal-0005",
+        "status": "VERIFIED",
+        "execution": "magicblock-er",
+        "signature": "4zoX1w27SNKiMXeSWsmrKJKsPj4jsn6cN6thLmWhigxM4xQGnQSt9jsdYwm9kbaDZ2ifbAzihSH95DbZHvDN13b4"
+      }
+    },
+    {
+      "sequence": 61,
+      "type": "ACTION_PROPOSED",
+      "entityId": "worker-01",
+      "data": {
+        "proposalId": "proposal-0006",
+        "actionType": "MOVE_TO",
+        "targetEntityId": "count-01",
+        "riskLevel": "HIGH",
+        "execution": "magicblock-er",
+        "round": 99,
+        "purpose": "chain-increment"
+      }
+    },
+    {
+      "sequence": 62,
+      "type": "ACTION_STATUS_CHANGED",
+      "entityId": "worker-01",
+      "data": {
+        "proposalId": "proposal-0006",
+        "status": "APPROVED"
+      }
+    },
+    {
+      "sequence": 63,
+      "type": "GOVERNANCE_PERMISSION_GRANTED",
+      "entityId": "worker-01",
+      "data": {
+        "proposalId": "proposal-0006",
+        "actionType": "MOVE_TO",
+        "targetEntityId": "count-01",
+        "riskLevel": "HIGH",
+        "policy": "explicit-human-approval"
+      }
+    },
+    {
+      "sequence": 64,
+      "type": "ACTION_PROPOSED",
+      "entityId": "worker-01",
+      "data": {
+        "proposalId": "proposal-0007",
+        "actionType": "MOVE_TO",
+        "targetEntityId": "count-01",
+        "riskLevel": "HIGH",
+        "execution": "magicblock-er",
+        "round": 100,
+        "purpose": "chain-increment"
+      }
+    },
+    {
+      "sequence": 65,
+      "type": "ACTION_STATUS_CHANGED",
+      "entityId": "worker-01",
+      "data": {
+        "proposalId": "proposal-0007",
+        "status": "APPROVED"
+      }
+    },
+    {
+      "sequence": 66,
+      "type": "GOVERNANCE_PERMISSION_GRANTED",
+      "entityId": "worker-01",
+      "data": {
+        "proposalId": "proposal-0007",
+        "actionType": "MOVE_TO",
+        "targetEntityId": "count-01",
+        "riskLevel": "HIGH",
+        "policy": "explicit-human-approval"
+      }
+    },
+    {
+      "sequence": 67,
+      "type": "MAGICBLOCK_OPERATION_FAILED",
+      "entityId": "count-01",
+      "data": {
+        "operation": "timed-read",
+        "error": "reader-timeout-status-unknown"
+      }
+    },
+    {
+      "sequence": 68,
+      "type": "LEASE_CHANGED",
+      "entityId": "count-01",
+      "data": {
+        "holder": "er",
+        "epoch": 1,
+        "stale": true
+      }
+    },
+    {
+      "sequence": 69,
+      "type": "SPECULATIVE_NOTED",
+      "entityId": "count-01",
+      "data": {
+        "speculativeId": "spec-001",
+        "kind": "offline-increment",
+        "detail": "partition minute 1: operator counts ahead locally"
+      }
+    },
+    {
+      "sequence": 70,
+      "type": "SPECULATIVE_NOTED",
+      "entityId": "count-01",
+      "data": {
+        "speculativeId": "spec-002",
+        "kind": "offline-increment",
+        "detail": "partition minute 2: operator counts ahead locally"
+      }
+    },
+    {
+      "sequence": 71,
+      "type": "SPECULATIVE_NOTED",
+      "entityId": "count-01",
+      "data": {
+        "speculativeId": "spec-003",
+        "kind": "offline-increment",
+        "detail": "partition minute 3: operator counts ahead locally"
+      }
+    },
+    {
+      "sequence": 72,
+      "type": "RECONCILIATION_RESOLVED",
+      "entityId": "count-01",
+      "data": {
+        "speculativeId": "spec-001",
+        "rule": "no-merge",
+        "outcome": "discarded-held-for-review",
+        "authoritativeNonce": 5,
+        "authoritativeCount": 5
+      }
+    },
+    {
+      "sequence": 73,
+      "type": "RECONCILIATION_RESOLVED",
+      "entityId": "count-01",
+      "data": {
+        "speculativeId": "spec-002",
+        "rule": "no-merge",
+        "outcome": "discarded-held-for-review",
+        "authoritativeNonce": 5,
+        "authoritativeCount": 5
+      }
+    },
+    {
+      "sequence": 74,
+      "type": "RECONCILIATION_RESOLVED",
+      "entityId": "count-01",
+      "data": {
+        "speculativeId": "spec-003",
+        "rule": "no-merge",
+        "outcome": "discarded-held-for-review",
+        "authoritativeNonce": 5,
+        "authoritativeCount": 5
+      }
+    },
+    {
+      "sequence": 75,
+      "type": "MAGICBLOCK_COMMIT_REQUESTED",
+      "entityId": "count-01",
+      "data": {
+        "operation": "commit-and-undelegate"
+      }
+    },
+    {
+      "sequence": 76,
+      "type": "MAGICBLOCK_EXECUTION_SUBMITTED",
+      "entityId": "count-01",
+      "data": {
+        "operation": "commit-and-undelegate",
+        "correlationId": "count-01",
+        "signature": "5iquZ7LzmK7WYt2o3wrkLpdh8gXVtP2GJu1PoN2gB9E52WThVrWEa8zSjzWKiPjFPZQCWNkyk6U1cH9bfEsshgfK"
+      }
+    },
+    {
+      "sequence": 77,
+      "type": "MAGICBLOCK_EXECUTION_CONFIRMED",
+      "entityId": "count-01",
+      "data": {
+        "operation": "commit-and-undelegate",
+        "correlationId": "count-01",
+        "signature": "5iquZ7LzmK7WYt2o3wrkLpdh8gXVtP2GJu1PoN2gB9E52WThVrWEa8zSjzWKiPjFPZQCWNkyk6U1cH9bfEsshgfK",
+        "slot": 758139912
+      }
+    },
+    {
+      "sequence": 78,
+      "type": "MAGICBLOCK_COMMIT_CONFIRMED",
+      "entityId": "count-01",
+      "data": {
+        "erSignature": "5iquZ7LzmK7WYt2o3wrkLpdh8gXVtP2GJu1PoN2gB9E52WThVrWEa8zSjzWKiPjFPZQCWNkyk6U1cH9bfEsshgfK",
+        "settlementSignature": "3RjNP3gvJGJiiJ8km5WsnLJnFrrFJm5AgdhBYfb2pKLmDbspkGDWY6MBDZLyvUjAVd4H69hiFx87LfPKC4zyiqGY"
+      }
+    },
+    {
+      "sequence": 79,
+      "type": "MAGICBLOCK_BASE_STATE_VERIFIED",
+      "entityId": "count-01",
+      "data": {
+        "signature": "3RjNP3gvJGJiiJ8km5WsnLJnFrrFJm5AgdhBYfb2pKLmDbspkGDWY6MBDZLyvUjAVd4H69hiFx87LfPKC4zyiqGY",
+        "count": 5,
+        "nonce": 5,
+        "source": "solana-devnet-undelegate"
+      }
+    },
+    {
+      "sequence": 80,
+      "type": "LEASE_CHANGED",
+      "entityId": "count-01",
+      "data": {
+        "holder": "local",
+        "epoch": 2,
+        "nonceFloor": 5
+      }
+    }
+  ]
+}

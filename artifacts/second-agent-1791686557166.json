@@ -1,0 +1,370 @@
+{
+  "at": "2026-10-11T02:42:37.219Z",
+  "rounds": 16,
+  "measurements": {
+    "rounds": 16,
+    "wood": 6,
+    "food": 0,
+    "deliveriesByWorker": {
+      "worker-01": 4,
+      "worker-03": 2
+    },
+    "failedProposals": [
+      "proposal-0005:PICK_UP:log-01",
+      "proposal-0008:PICK_UP:log-02",
+      "proposal-0012:PICK_UP:log-03",
+      "proposal-0017:PICK_UP:log-04",
+      "proposal-0020:PICK_UP:log-05",
+      "proposal-0024:PICK_UP:log-06"
+    ],
+    "damagedTrees": 6,
+    "felledTrees": 6,
+    "logsPerFelledTree": {
+      "tree-01": 1,
+      "tree-02": 1,
+      "tree-03": 1,
+      "tree-04": 1,
+      "tree-05": 1,
+      "tree-06": 1
+    },
+    "sharedGatherProposals": [
+      "proposal-0009",
+      "proposal-0021"
+    ],
+    "proposalsTerminal": true,
+    "directivesDrained": true,
+    "replayHashEqual": true
+  },
+  "turns": [
+    {
+      "round": 0,
+      "driver": "moss",
+      "worker": "worker-01",
+      "action": "GATHER",
+      "target": "tree-04",
+      "proposalId": null,
+      "outcome": "driving"
+    },
+    {
+      "round": 0,
+      "driver": "rival",
+      "worker": "worker-03",
+      "action": "GATHER",
+      "target": "tree-03",
+      "proposalId": null,
+      "outcome": "driving"
+    },
+    {
+      "round": 1,
+      "driver": "moss",
+      "worker": "worker-01",
+      "action": "PICK_UP",
+      "target": "log-01",
+      "proposalId": null,
+      "outcome": "driving"
+    },
+    {
+      "round": 1,
+      "driver": "rival",
+      "worker": "worker-03",
+      "action": "PICK_UP",
+      "target": "log-01",
+      "proposalId": null,
+      "outcome": "driving"
+    },
+    {
+      "round": 2,
+      "driver": "moss",
+      "worker": "worker-01",
+      "action": "PICK_UP",
+      "target": "log-02",
+      "proposalId": null,
+      "outcome": "driving"
+    },
+    {
+      "round": 2,
+      "driver": "rival",
+      "worker": "worker-03",
+      "action": "PICK_UP",
+      "target": "log-02",
+      "proposalId": null,
+      "outcome": "driving"
+    },
+    {
+      "round": 3,
+      "driver": "moss",
+      "worker": "worker-01",
+      "action": "GATHER",
+      "target": "tree-01",
+      "proposalId": null,
+      "outcome": "driving"
+    },
+    {
+      "round": 3,
+      "driver": "rival",
+      "worker": "worker-03",
+      "action": "GATHER",
+      "target": "tree-01",
+      "proposalId": null,
+      "outcome": "driving"
+    },
+    {
+      "round": 4,
+      "driver": "moss",
+      "worker": "worker-01",
+      "action": "PICK_UP",
+      "target": "log-03",
+      "proposalId": null,
+      "outcome": "driving"
+    },
+    {
+      "round": 4,
+      "driver": "rival",
+      "worker": "worker-03",
+      "action": "PICK_UP",
+      "target": "log-03",
+      "proposalId": null,
+      "outcome": "driving"
+    },
+    {
+      "round": 5,
+      "driver": "moss",
+      "worker": "worker-01",
+      "action": "GATHER",
+      "target": "tree-06",
+      "proposalId": null,
+      "outcome": "driving"
+    },
+    {
+      "round": 5,
+      "driver": "rival",
+      "worker": "worker-03",
+      "action": "GATHER",
+      "target": "tree-02",
+      "proposalId": null,
+      "outcome": "driving"
+    },
+    {
+      "round": 6,
+      "driver": "moss",
+      "worker": "worker-01",
+      "action": "PICK_UP",
+      "target": "log-04",
+      "proposalId": null,
+      "outcome": "driving"
+    },
+    {
+      "round": 6,
+      "driver": "rival",
+      "worker": "worker-03",
+      "action": "PICK_UP",
+      "target": "log-04",
+      "proposalId": null,
+      "outcome": "driving"
+    },
+    {
+      "round": 7,
+      "driver": "moss",
+      "worker": "worker-01",
+      "action": "PICK_UP",
+      "target": "log-05",
+      "proposalId": null,
+      "outcome": "driving"
+    },
+    {
+      "round": 7,
+      "driver": "rival",
+      "worker": "worker-03",
+      "action": "PICK_UP",
+      "target": "log-05",
+      "proposalId": null,
+      "outcome": "driving"
+    },
+    {
+      "round": 8,
+      "driver": "moss",
+      "worker": "worker-01",
+      "action": "GATHER",
+      "target": "tree-05",
+      "proposalId": null,
+      "outcome": "driving"
+    },
+    {
+      "round": 8,
+      "driver": "rival",
+      "worker": "worker-03",
+      "action": "GATHER",
+      "target": "tree-05",
+      "proposalId": null,
+      "outcome": "driving"
+    },
+    {
+      "round": 9,
+      "driver": "moss",
+      "worker": "worker-01",
+      "action": "PICK_UP",
+      "target": "log-06",
+      "proposalId": null,
+      "outcome": "driving"
+    },
+    {
+      "round": 9,
+      "driver": "rival",
+      "worker": "worker-03",
+      "action": "PICK_UP",
+      "target": "log-06",
+      "proposalId": null,
+      "outcome": "driving"
+    },
+    {
+      "round": 10,
+      "driver": "moss",
+      "worker": "worker-01",
+      "action": null,
+      "target": null,
+      "proposalId": null,
+      "outcome": "no-step"
+    },
+    {
+      "round": 10,
+      "driver": "rival",
+      "worker": "worker-03",
+      "action": null,
+      "target": null,
+      "proposalId": null,
+      "outcome": "no-step"
+    },
+    {
+      "round": 11,
+      "driver": "moss",
+      "worker": "worker-01",
+      "action": null,
+      "target": null,
+      "proposalId": null,
+      "outcome": "no-step"
+    },
+    {
+      "round": 11,
+      "driver": "rival",
+      "worker": "worker-03",
+      "action": null,
+      "target": null,
+      "proposalId": null,
+      "outcome": "no-step"
+    },
+    {
+      "round": 12,
+      "driver": "moss",
+      "worker": "worker-01",
+      "action": null,
+      "target": null,
+      "proposalId": null,
+      "outcome": "no-step"
+    },
+    {
+      "round": 12,
+      "driver": "rival",
+      "worker": "worker-03",
+      "action": null,
+      "target": null,
+      "proposalId": null,
+      "outcome": "no-step"
+    },
+    {
+      "round": 13,
+      "driver": "moss",
+      "worker": "worker-01",
+      "action": null,
+      "target": null,
+      "proposalId": null,
+      "outcome": "no-step"
+    },
+    {
+      "round": 13,
+      "driver": "rival",
+      "worker": "worker-03",
+      "action": null,
+      "target": null,
+      "proposalId": null,
+      "outcome": "no-step"
+    },
+    {
+      "round": 14,
+      "driver": "moss",
+      "worker": "worker-01",
+      "action": null,
+      "target": null,
+      "proposalId": null,
+      "outcome": "no-step"
+    },
+    {
+      "round": 14,
+      "driver": "rival",
+      "worker": "worker-03",
+      "action": null,
+      "target": null,
+      "proposalId": null,
+      "outcome": "no-step"
+    },
+    {
+      "round": 15,
+      "driver": "moss",
+      "worker": "worker-01",
+      "action": null,
+      "target": null,
+      "proposalId": null,
+      "outcome": "no-step"
+    },
+    {
+      "round": 15,
+      "driver": "rival",
+      "worker": "worker-03",
+      "action": null,
+      "target": null,
+      "proposalId": null,
+      "outcome": "no-step"
+    }
+  ],
+  "steps": [
+    {
+      "step": "world-progress",
+      "ok": true,
+      "detail": "wood=6 (of 6 standing trees)"
+    },
+    {
+      "step": "no-double-fell",
+      "ok": true,
+      "detail": "felled=6, logs-per-tree=[1,1,1,1,1,1]"
+    },
+    {
+      "step": "contention-settled",
+      "ok": true,
+      "detail": "failed=[proposal-0005:PICK_UP:log-01,proposal-0008:PICK_UP:log-02,proposal-0012:PICK_UP:log-03,proposal-0017:PICK_UP:log-04,proposal-0020:PICK_UP:log-05,proposal-0024:PICK_UP:log-06] shared=[proposal-0009,proposal-0021]"
+    },
+    {
+      "step": "delivery-attribution",
+      "ok": true,
+      "detail": "every DELIVER proposal VERIFIED under its own haul"
+    },
+    {
+      "step": "both-crews-delivered",
+      "ok": true,
+      "detail": "{\"worker-01\":4,\"worker-03\":2}"
+    },
+    {
+      "step": "proposal-hygiene",
+      "ok": true,
+      "detail": "every proposal terminal"
+    },
+    {
+      "step": "directives-drained",
+      "ok": true,
+      "detail": "no stranded directives"
+    },
+    {
+      "step": "replay-equality",
+      "ok": true,
+      "detail": "combined multi-driver log replays hash-identical"
+    }
+  ]
+}

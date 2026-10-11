@@ -1,0 +1,652 @@
+{
+  "at": "2026-10-10T11:32:23.274Z",
+  "seed": "deterministic createWorld()",
+  "beats": [
+    {
+      "beat": 1,
+      "name": "direct command",
+      "detail": "judge: \"gather food\"",
+      "evidence": {
+        "food": 4
+      }
+    },
+    {
+      "beat": 2,
+      "name": "workers deliver",
+      "detail": "stockpile changed through execution + verification",
+      "evidence": {
+        "rows": 3
+      }
+    },
+    {
+      "beat": 3,
+      "name": "delegated goal",
+      "detail": "judge sets a large food-preservation goal; agent selects actions within LOW/MEDIUM policy"
+    },
+    {
+      "beat": 4,
+      "name": "autonomous execution",
+      "detail": "permitted actions executed without per-action approval",
+      "evidence": {
+        "rows": 16,
+        "foodBeforeDelegated": 4,
+        "foodAfter": 5
+      }
+    },
+    {
+      "beat": 5,
+      "name": "constraint",
+      "detail": "harvests genuinely deplete patches (berry-patch-01=harvested, berry-patch-02=harvested)"
+    },
+    {
+      "beat": 6,
+      "name": "adaptation",
+      "detail": "work moved across patches as each depleted (berry-patch-02, berry-patch-01)",
+      "evidence": {
+        "directPatches": [
+          "berry-patch-02",
+          "berry-patch-01"
+        ],
+        "delegatedPatches": []
+      }
+    },
+    {
+      "beat": 7,
+      "name": "stricter policy",
+      "detail": "supervised mode: MEDIUM/HIGH hold for approval"
+    },
+    {
+      "beat": 8,
+      "name": "costly proposal",
+      "detail": "house proposed (proposal-0018, HIGH risk, held)"
+    },
+    {
+      "beat": 9,
+      "name": "rejection",
+      "detail": "judge rejects the house"
+    },
+    {
+      "beat": 10,
+      "name": "inertia proved",
+      "detail": "construction did not occur; stockpile intact",
+      "evidence": {
+        "wood": 3
+      }
+    },
+    {
+      "beat": 11,
+      "name": "replan",
+      "detail": "agent chose a different valid path (skipped: BUILD:settlement-01 was rejected before; replanning around it)"
+    },
+    {
+      "beat": 12,
+      "name": "timeline",
+      "detail": "185 causal events available for inspection",
+      "evidence": {
+        "tail": [
+          "431 ACTION_STATUS_CHANGED@worker-03",
+          "432 ACTION_PROPOSED@worker-01",
+          "433 ACTION_STATUS_CHANGED@worker-01",
+          "434 GOVERNANCE_PERMISSION_DENIED@worker-01",
+          "435 ACTION_PROPOSED@worker-01",
+          "436 ACTION_STATUS_CHANGED@worker-01",
+          "437 GOVERNANCE_PERMISSION_GRANTED@worker-01",
+          "438 ACTION_STATUS_CHANGED@worker-01",
+          "439 CONSTRUCTION_STARTED@house-01",
+          "454 CONSTRUCTION_COMPLETED@house-01",
+          "455 ACTION_STATUS_CHANGED@worker-01",
+          "456 ACTION_STATUS_CHANGED@worker-01",
+          "457 AGENT_DECIDED@worker-02",
+          "458 ACTION_PROPOSED@worker-02"
+        ]
+      }
+    }
+  ],
+  "rows": [
+    {
+      "turn": 1,
+      "source": "planner",
+      "action": "HARVEST",
+      "target": "berry-patch-02",
+      "proposalId": "proposal-0001",
+      "risk": "LOW",
+      "authorized": true,
+      "executed": true,
+      "verified": true,
+      "note": "postcondition independently verified",
+      "worldAfter": {
+        "tick": 20,
+        "wood": 0,
+        "food": 3,
+        "houses": 0
+      }
+    },
+    {
+      "turn": 2,
+      "source": "planner",
+      "action": "PICK_UP",
+      "target": "food-01",
+      "proposalId": "proposal-0003",
+      "risk": "LOW",
+      "authorized": true,
+      "executed": true,
+      "verified": true,
+      "note": "postcondition independently verified",
+      "worldAfter": {
+        "tick": 22,
+        "wood": 0,
+        "food": 3,
+        "houses": 0
+      }
+    },
+    {
+      "turn": 3,
+      "source": "planner",
+      "action": "HARVEST",
+      "target": "berry-patch-01",
+      "proposalId": "proposal-0005",
+      "risk": "LOW",
+      "authorized": true,
+      "executed": true,
+      "verified": true,
+      "note": "postcondition independently verified",
+      "worldAfter": {
+        "tick": 59,
+        "wood": 0,
+        "food": 4,
+        "houses": 0
+      }
+    },
+    {
+      "turn": 1,
+      "source": "planner",
+      "action": "PICK_UP",
+      "target": "food-02",
+      "proposalId": "proposal-0006",
+      "risk": "LOW",
+      "authorized": true,
+      "executed": true,
+      "verified": true,
+      "note": "postcondition independently verified",
+      "worldAfter": {
+        "tick": 61,
+        "wood": 0,
+        "food": 4,
+        "houses": 0
+      }
+    },
+    {
+      "turn": 2,
+      "source": "planner",
+      "action": "DELIVER",
+      "target": "settlement-01",
+      "proposalId": "proposal-0007",
+      "risk": "LOW",
+      "authorized": true,
+      "executed": true,
+      "verified": true,
+      "note": "postcondition independently verified",
+      "worldAfter": {
+        "tick": 79,
+        "wood": 0,
+        "food": 5,
+        "houses": 0
+      }
+    },
+    {
+      "turn": 3,
+      "source": "planner",
+      "action": null,
+      "target": null,
+      "proposalId": null,
+      "risk": null,
+      "authorized": false,
+      "executed": false,
+      "verified": false,
+      "note": "no step available (goal may be blocked or complete)",
+      "worldAfter": {
+        "tick": 79,
+        "wood": 0,
+        "food": 5,
+        "houses": 0
+      }
+    },
+    {
+      "turn": 4,
+      "source": "planner",
+      "action": null,
+      "target": null,
+      "proposalId": null,
+      "risk": null,
+      "authorized": false,
+      "executed": false,
+      "verified": false,
+      "note": "no step available (goal may be blocked or complete)",
+      "worldAfter": {
+        "tick": 79,
+        "wood": 0,
+        "food": 5,
+        "houses": 0
+      }
+    },
+    {
+      "turn": 5,
+      "source": "planner",
+      "action": null,
+      "target": null,
+      "proposalId": null,
+      "risk": null,
+      "authorized": false,
+      "executed": false,
+      "verified": false,
+      "note": "no step available (goal may be blocked or complete)",
+      "worldAfter": {
+        "tick": 79,
+        "wood": 0,
+        "food": 5,
+        "houses": 0
+      }
+    },
+    {
+      "turn": 6,
+      "source": "planner",
+      "action": null,
+      "target": null,
+      "proposalId": null,
+      "risk": null,
+      "authorized": false,
+      "executed": false,
+      "verified": false,
+      "note": "no step available (goal may be blocked or complete)",
+      "worldAfter": {
+        "tick": 79,
+        "wood": 0,
+        "food": 5,
+        "houses": 0
+      }
+    },
+    {
+      "turn": 7,
+      "source": "planner",
+      "action": null,
+      "target": null,
+      "proposalId": null,
+      "risk": null,
+      "authorized": false,
+      "executed": false,
+      "verified": false,
+      "note": "no step available (goal may be blocked or complete)",
+      "worldAfter": {
+        "tick": 79,
+        "wood": 0,
+        "food": 5,
+        "houses": 0
+      }
+    },
+    {
+      "turn": 8,
+      "source": "planner",
+      "action": null,
+      "target": null,
+      "proposalId": null,
+      "risk": null,
+      "authorized": false,
+      "executed": false,
+      "verified": false,
+      "note": "no step available (goal may be blocked or complete)",
+      "worldAfter": {
+        "tick": 79,
+        "wood": 0,
+        "food": 5,
+        "houses": 0
+      }
+    },
+    {
+      "turn": 9,
+      "source": "planner",
+      "action": null,
+      "target": null,
+      "proposalId": null,
+      "risk": null,
+      "authorized": false,
+      "executed": false,
+      "verified": false,
+      "note": "no step available (goal may be blocked or complete)",
+      "worldAfter": {
+        "tick": 79,
+        "wood": 0,
+        "food": 5,
+        "houses": 0
+      }
+    },
+    {
+      "turn": 10,
+      "source": "planner",
+      "action": null,
+      "target": null,
+      "proposalId": null,
+      "risk": null,
+      "authorized": false,
+      "executed": false,
+      "verified": false,
+      "note": "no step available (goal may be blocked or complete)",
+      "worldAfter": {
+        "tick": 79,
+        "wood": 0,
+        "food": 5,
+        "houses": 0
+      }
+    },
+    {
+      "turn": 11,
+      "source": "planner",
+      "action": null,
+      "target": null,
+      "proposalId": null,
+      "risk": null,
+      "authorized": false,
+      "executed": false,
+      "verified": false,
+      "note": "no step available (goal may be blocked or complete)",
+      "worldAfter": {
+        "tick": 79,
+        "wood": 0,
+        "food": 5,
+        "houses": 0
+      }
+    },
+    {
+      "turn": 12,
+      "source": "planner",
+      "action": null,
+      "target": null,
+      "proposalId": null,
+      "risk": null,
+      "authorized": false,
+      "executed": false,
+      "verified": false,
+      "note": "no step available (goal may be blocked or complete)",
+      "worldAfter": {
+        "tick": 79,
+        "wood": 0,
+        "food": 5,
+        "houses": 0
+      }
+    },
+    {
+      "turn": 13,
+      "source": "planner",
+      "action": null,
+      "target": null,
+      "proposalId": null,
+      "risk": null,
+      "authorized": false,
+      "executed": false,
+      "verified": false,
+      "note": "no step available (goal may be blocked or complete)",
+      "worldAfter": {
+        "tick": 79,
+        "wood": 0,
+        "food": 5,
+        "houses": 0
+      }
+    },
+    {
+      "turn": 14,
+      "source": "planner",
+      "action": null,
+      "target": null,
+      "proposalId": null,
+      "risk": null,
+      "authorized": false,
+      "executed": false,
+      "verified": false,
+      "note": "no step available (goal may be blocked or complete)",
+      "worldAfter": {
+        "tick": 79,
+        "wood": 0,
+        "food": 5,
+        "houses": 0
+      }
+    },
+    {
+      "turn": 15,
+      "source": "planner",
+      "action": null,
+      "target": null,
+      "proposalId": null,
+      "risk": null,
+      "authorized": false,
+      "executed": false,
+      "verified": false,
+      "note": "no step available (goal may be blocked or complete)",
+      "worldAfter": {
+        "tick": 79,
+        "wood": 0,
+        "food": 5,
+        "houses": 0
+      }
+    },
+    {
+      "turn": 16,
+      "source": "planner",
+      "action": null,
+      "target": null,
+      "proposalId": null,
+      "risk": null,
+      "authorized": false,
+      "executed": false,
+      "verified": false,
+      "note": "no step available (goal may be blocked or complete)",
+      "worldAfter": {
+        "tick": 79,
+        "wood": 0,
+        "food": 5,
+        "houses": 0
+      }
+    },
+    {
+      "turn": 1,
+      "source": "planner",
+      "action": "GATHER",
+      "target": "tree-03",
+      "proposalId": "proposal-0009",
+      "risk": "LOW",
+      "authorized": true,
+      "executed": true,
+      "verified": true,
+      "note": "postcondition independently verified",
+      "worldAfter": {
+        "tick": 93,
+        "wood": 0,
+        "food": 5,
+        "houses": 0
+      }
+    },
+    {
+      "turn": 2,
+      "source": "planner",
+      "action": "PICK_UP",
+      "target": "log-01",
+      "proposalId": "proposal-0010",
+      "risk": "LOW",
+      "authorized": true,
+      "executed": true,
+      "verified": true,
+      "note": "postcondition independently verified",
+      "worldAfter": {
+        "tick": 94,
+        "wood": 0,
+        "food": 5,
+        "houses": 0
+      }
+    },
+    {
+      "turn": 3,
+      "source": "planner",
+      "action": "GATHER",
+      "target": "tree-02",
+      "proposalId": "proposal-0012",
+      "risk": "LOW",
+      "authorized": true,
+      "executed": true,
+      "verified": true,
+      "note": "postcondition independently verified",
+      "worldAfter": {
+        "tick": 120,
+        "wood": 1,
+        "food": 5,
+        "houses": 0
+      }
+    },
+    {
+      "turn": 4,
+      "source": "planner",
+      "action": "PICK_UP",
+      "target": "log-02",
+      "proposalId": "proposal-0014",
+      "risk": "LOW",
+      "authorized": true,
+      "executed": true,
+      "verified": true,
+      "note": "postcondition independently verified",
+      "worldAfter": {
+        "tick": 128,
+        "wood": 1,
+        "food": 5,
+        "houses": 0
+      }
+    },
+    {
+      "turn": 5,
+      "source": "planner",
+      "action": "PICK_UP",
+      "target": "log-03",
+      "proposalId": "proposal-0016",
+      "risk": "LOW",
+      "authorized": true,
+      "executed": true,
+      "verified": true,
+      "note": "postcondition independently verified",
+      "worldAfter": {
+        "tick": 129,
+        "wood": 1,
+        "food": 5,
+        "houses": 0
+      }
+    },
+    {
+      "turn": 6,
+      "source": "planner",
+      "action": "DELIVER",
+      "target": "settlement-01",
+      "proposalId": "proposal-0017",
+      "risk": "LOW",
+      "authorized": true,
+      "executed": true,
+      "verified": true,
+      "note": "postcondition independently verified",
+      "worldAfter": {
+        "tick": 142,
+        "wood": 2,
+        "food": 5,
+        "houses": 0
+      }
+    },
+    {
+      "turn": 7,
+      "source": "planner",
+      "action": "DELIVER",
+      "target": "settlement-01",
+      "proposalId": "proposal-0015",
+      "risk": "LOW",
+      "authorized": true,
+      "executed": true,
+      "verified": true,
+      "note": "postcondition independently verified",
+      "worldAfter": {
+        "tick": 143,
+        "wood": 3,
+        "food": 5,
+        "houses": 0
+      }
+    },
+    {
+      "turn": 8,
+      "source": "planner",
+      "action": "BUILD",
+      "target": "settlement-01",
+      "proposalId": "proposal-0018",
+      "risk": "HIGH",
+      "authorized": false,
+      "executed": false,
+      "verified": false,
+      "note": "held for human approval (PROPOSED)",
+      "worldAfter": {
+        "tick": 143,
+        "wood": 3,
+        "food": 5,
+        "houses": 0
+      }
+    },
+    {
+      "turn": 9,
+      "source": "planner",
+      "action": "BUILD",
+      "target": "settlement-01",
+      "proposalId": null,
+      "risk": null,
+      "authorized": false,
+      "executed": false,
+      "verified": false,
+      "note": "skipped: BUILD:settlement-01 was rejected before; replanning around it",
+      "worldAfter": {
+        "tick": 143,
+        "wood": 3,
+        "food": 5,
+        "houses": 0
+      }
+    },
+    {
+      "turn": 10,
+      "source": "planner",
+      "action": "BUILD",
+      "target": "settlement-01",
+      "proposalId": "proposal-0019",
+      "risk": "HIGH",
+      "authorized": false,
+      "executed": false,
+      "verified": false,
+      "note": "held for human approval (PROPOSED)",
+      "worldAfter": {
+        "tick": 143,
+        "wood": 3,
+        "food": 5,
+        "houses": 0
+      }
+    },
+    {
+      "turn": 11,
+      "source": "planner",
+      "action": "BUILD",
+      "target": "settlement-01",
+      "proposalId": "proposal-0019",
+      "risk": "HIGH",
+      "authorized": true,
+      "executed": true,
+      "verified": true,
+      "note": "postcondition independently verified",
+      "worldAfter": {
+        "tick": 159,
+        "wood": 1,
+        "food": 5,
+        "houses": 1
+      }
+    }
+  ],
+  "totals": {
+    "wood": 1,
+    "food": 5,
+    "tick": 159
+  }
+}

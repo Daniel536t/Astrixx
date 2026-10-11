@@ -1,0 +1,128 @@
+{
+  "url": "http://127.0.0.1:5173/?e2e=1",
+  "mode": "LOCAL SIMULATION — shelter slice acceptance",
+  "goal": "GOAL · BUILD 1 SHELTER · ACTIVE",
+  "shelter": {
+    "id": "shelter-01",
+    "state": "complete",
+    "progress": 1,
+    "pos": {
+      "x": -3.031088913245535,
+      "z": -1.7500000000000004
+    }
+  },
+  "plan": {
+    "id": "plan-01",
+    "kind": "construct-shelter",
+    "status": "completed",
+    "steps": [
+      {
+        "actionType": "GATHER",
+        "targetEntityId": "tree-04",
+        "source": "sim",
+        "status": "verified",
+        "note": "postcondition independently verified",
+        "index": 0,
+        "at": 65
+      },
+      {
+        "actionType": "PICK_UP",
+        "targetEntityId": "log-01",
+        "source": "model: model:gemini:gemini-3.5-flash-lite :: Pick up the available ground log to start accumulating wood for the shelter.",
+        "status": "verified",
+        "note": "postcondition independently verified",
+        "index": 1,
+        "at": 68
+      },
+      {
+        "actionType": "DELIVER",
+        "targetEntityId": "settlement-01",
+        "source": "sim",
+        "status": "verified",
+        "note": "postcondition independently verified",
+        "index": 2,
+        "at": 77
+      },
+      {
+        "actionType": "GATHER",
+        "targetEntityId": "tree-01",
+        "source": "sim",
+        "status": "verified",
+        "note": "postcondition independently verified",
+        "index": 3,
+        "at": 133
+      },
+      {
+        "actionType": "PICK_UP",
+        "targetEntityId": "log-02",
+        "source": "model: model:gemini:gemini-3.5-flash-lite :: Pick up the available ground log to increase wood resources.",
+        "status": "verified",
+        "note": "postcondition independently verified",
+        "index": 4,
+        "at": 150
+      },
+      {
+        "actionType": "DELIVER",
+        "targetEntityId": "settlement-01",
+        "source": "sim",
+        "status": "verified",
+        "note": "postcondition independently verified",
+        "index": 5,
+        "at": 160
+      },
+      {
+        "actionType": "COLLECT",
+        "targetEntityId": "branch-02",
+        "source": "planner: The shelter needs poles; collect the nearest branch.",
+        "status": "verified",
+        "note": "postcondition independently verified",
+        "index": 6,
+        "at": 213
+      },
+      {
+        "actionType": "COLLECT",
+        "targetEntityId": "branch-02",
+        "source": "planner: The shelter needs poles; collect the nearest branch.",
+        "status": "blocked",
+        "note": "step could not start (stale target or busy worker)",
+        "index": 7,
+        "at": 213
+      },
+      {
+        "actionType": "COLLECT",
+        "targetEntityId": "branch-01",
+        "source": "planner: The shelter needs poles; collect the nearest branch.",
+        "status": "verified",
+        "note": "postcondition independently verified",
+        "index": 8,
+        "at": 233
+      },
+      {
+        "actionType": "COLLECT",
+        "targetEntityId": "branch-01",
+        "source": "planner: The shelter needs poles; collect the nearest branch.",
+        "status": "blocked",
+        "note": "step could not start (stale target or busy worker)",
+        "index": 9,
+        "at": 233
+      },
+      {
+        "actionType": "BUILD",
+        "targetEntityId": "settlement-01",
+        "source": "sim",
+        "status": "verified",
+        "note": "postcondition independently verified",
+        "index": 10,
+        "at": 296
+      }
+    ]
+  },
+  "restedUntilTick": 1540,
+  "browserErrors": [],
+  "screenshots": {
+    "initial": "artifacts/astrix-shelter-initial.png",
+    "construction": "artifacts/astrix-shelter-construction.png",
+    "complete": "artifacts/astrix-shelter-complete.png",
+    "rest": "artifacts/astrix-shelter-rest.png"
+  }
+}
