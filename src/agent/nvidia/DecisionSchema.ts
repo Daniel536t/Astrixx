@@ -7,10 +7,27 @@
  * stripped: the model cannot escalate itself onto the chain path.
  */
 import type { ActionType, WorldState } from '../../world/types';
-import { FARM_WOOD_COST, HOUSE_SLOTS, FARM_SLOTS, SETTLEMENT_ID, SHELTER_WOOD_COST } from '../../world/types';
+import { FARM_WOOD_COST, HOUSE_SLOTS, FARM_SLOTS, SETTLEMENT_ID, SHELTER_FOOTPRINT, SHELTER_WOOD_COST } from '../../world/types';
 import { DEFAULT_HOUSE_BLUEPRINT, getBlueprint } from '../../game/blueprints';
-import { findShelterSite, validateShelterSite } from '../../game/shelter';
+import { findShelterSite, HOUSE_SITE_TOLERANCE, searchNearbySite, validateSite } from '../../game/shelter';
 import type { AgentObservation } from '../Agent';
+
+/**
+ * Planning-time site legality for BUILD. Mirrors execution: a structure of
+ * this kind already underway at the site may be resumed; workers never block
+ * a site (they move, and the builder walks into it); exact requests must be
+ * valid as given; approximate ones need ground within the execution tolerance.
+ */
+function siteLegal(state: Readonly<WorldState>, kind: 'house' | 'shelter', x: number, z: number, footprint: number, exact: boolean, tolerance: number): boolean {
+  const reach = exact ? 0.5 : tolerance;
+  const underway = Object.values(state.entities).some(
+    (e) => e.kind === kind && e.state === 'construction' && Math.hypot(e.position.x - x, e.position.z - z) <= reach,
+  );
+  if (underway) return true;
+  const workers = new Set(Object.values(state.entities).filter((e) => e.kind === 'worker').map((e) => e.id));
+  if (validateSite(state, x, z, footprint, workers).ok) return true;
+  return !exact && searchNearbySite(state, x, z, tolerance, workers, footprint) !== null;
+}
 
 export const SUPPORTED_ACTION_TYPES: ActionType[] = ['MOVE_TO', 'GATHER', 'HARVEST', 'PICK_UP', 'DELIVER', 'BUILD', 'PLANT', 'COLLECT', 'CRAFT', 'REST'];
 
@@ -136,7 +153,7 @@ export function validateDecisionAgainstWorld(
           const rawZ = parameters?.['z'];
           if (rawX !== undefined || rawZ !== undefined) {
             if (typeof rawX !== 'number' || typeof rawZ !== 'number') return false;
-            return validateShelterSite(state, rawX, rawZ).ok;
+            return siteLegal(state, 'shelter', rawX, rawZ, SHELTER_FOOTPRINT, parameters?.['exact'] === true, 2.0);
           }
           // No coordinates: the simulation picks the free site — require that
           // one exists rather than guessing land use from here.
@@ -152,9 +169,18 @@ export function validateDecisionAgainstWorld(
           if (rawBlueprint !== undefined && (typeof rawBlueprint !== 'string' || !getBlueprint(rawBlueprint))) return false;
           const bp = getBlueprint(typeof rawBlueprint === 'string' ? rawBlueprint : DEFAULT_HOUSE_BLUEPRINT) ?? getBlueprint(DEFAULT_HOUSE_BLUEPRINT)!;
           if (state.wood < bp.woodCost) return false;
+          // Player-directed site: exact coordinates must be valid as given;
+          // approximate ones need valid ground within the same tolerance the
+          // simulation will search. Plot capacity does not apply.
+          const rawX = parameters?.['x'];
+          const rawZ = parameters?.['z'];
+          if (rawX !== undefined || rawZ !== undefined) {
+            if (typeof rawX !== 'number' || typeof rawZ !== 'number') return false;
+            return siteLegal(state, 'house', rawX, rawZ, bp.footprint, parameters?.['exact'] === true, HOUSE_SITE_TOLERANCE);
+          }
         } else if (state.wood < cost) return false;
         const slots = structure === 'farm' ? FARM_SLOTS : HOUSE_SLOTS;
-        const used = Object.values(state.entities).filter((entity) => entity.kind === structure).length;
+        const used = Object.values(state.entities).filter((entity) => entity.kind === structure && !(entity.kind === 'house' && typeof entity.footprint === 'number')).length;
         return used < slots.length;
       }
       case 'MOVE_TO':

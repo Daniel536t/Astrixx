@@ -69,12 +69,14 @@ describe('paraphrase intents', () => {
     });
   });
 
-  it('asks for a design choice instead of guessing the cheapest', () => {
+  it('picks the cheapest residence by comparing real blueprint costs', () => {
     const parsed = parseCommand('build the cheapest house');
-    expect(parsed.ok).toBe(false);
-    if (parsed.ok) throw new Error('cheapest should clarify');
-    expect(parsed.clarify).toMatch(/homestead.*2 wood/i);
-    expect(parsed.clarify).toMatch(/cabin.*4 wood/i);
+    expect(parsed.ok).toBe(true);
+    if (!parsed.ok) throw new Error('cheapest should resolve');
+    expect(parsed.goal).toMatchObject({ kind: 'construct-house', blueprint: 'homestead' });
+    expect(parsed.goal.note).toMatch(/homestead.*2 wood/i);
+    expect(parsed.goal.note).toMatch(/cabin.*4 wood/i);
+    expect(parsed.goal.note).toMatch(/cottage.*2 wood \+ 2 branches/i);
   });
 });
 

@@ -4,8 +4,10 @@
  */
 import type { WorldState } from '../world/types';
 import { getRecipe, recipeSatisfied } from './recipes';
+import { blueprintList } from './blueprints';
 import { MISSING_CAPABILITIES } from './capabilities';
-import { parsePlaceIntent, type PlaceIntent } from './placement';
+import { claimSites, parsePlaceIntent, type PlaceIntent } from './placement';
+import { HOUSE_SITE_TOLERANCE } from './shelter';
 
 export type GoalKind = 'gather-wood' | 'gather-food' | 'fetch-water' | 'construct-house' | 'construct-farm' | 'construct-shelter' | 'preserve' | 'prioritize' | 'plant' | 'craft';
 
@@ -26,6 +28,8 @@ export interface GameGoal {
   siteNote?: string;
   /** For construct-house: blueprint id (default homestead). */
   blueprint?: string;
+  /** Multi-structure placement: one resolved site per requested structure. */
+  sites?: Array<{ x: number; z: number }>;
   /** Raw placement intent from the command; resolved to `site` before the goal starts. */
   place?: PlaceIntent;
   /** Resources the planner must not gather while this goal is active. */
@@ -69,9 +73,13 @@ const NUMBER_WORDS: Record<string, number> = {
 
 /** Quantity from digits ("3", "100") or number words ("two"); else fallback. */
 function qtyFrom(input: string, fallback: number): number {
-  const digits = input.match(/\b(\d+)\b/);
+  // Coordinates ("X: -6, Z: 0", "(4, -2)") are locations, never counts.
+  const counted = input
+    .replace(/\b[xz]\s*[:=]?\s*-?\d+(?:\.\d+)?/g, ' ')
+    .replace(/\(\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*\)/g, ' ');
+  const digits = counted.match(/\b(\d+)\b/);
   if (digits) return qty(digits, fallback);
-  const word = input.match(/\b(one|two|three|four|five|six|seven|eight|nine|ten)\b/);
+  const word = counted.match(/\b(one|two|three|four|five|six|seven|eight|nine|ten)\b/);
   if (word && word[1]) return NUMBER_WORDS[word[1]] ?? fallback;
   return fallback;
 }
@@ -108,7 +116,7 @@ export function parseCommand(text: string): ParseResult {
     const n = Math.min(qtyFrom(input, 1), 2);
     return { ok: true, goal: { kind: 'construct-farm', quantity: n, note: `Complete ${n} farm(s) for renewable food; each costs 3 wood and needs approval under restrictive policies. Only 2 farm plots exist.` } };
   }
-  if (/\b(build|construct|raise|put up)\b.*\bshelter\b/.test(input) || (/\bshelter\b/.test(input) && /\b(need|want)\b/.test(input))) {
+  if (/\b(build|construct|raise|put up)\b.*\bshelters?\b/.test(input) || (/\bshelters?\b/.test(input) && /\b(need|want)\b/.test(input))) {
     const n = Math.min(qtyFrom(input, 1), 3);
     const place = parsePlaceIntent(input);
     return { ok: true, goal: { kind: 'construct-shelter', quantity: n, place: place.intent, siteNote: place.note, note: `Raise ${n} wilderness shelter(s)${place.intent.kind === 'auto' ? '' : ` (${place.note})`}; each costs 2 wood + 2 branches and needs approval under restrictive policies. A finished shelter is a verified rest stop that speeds later work.` } };
@@ -145,23 +153,31 @@ export function parseCommand(text: string): ParseResult {
   if (/\b(organiz\w*|layout|arrange\w*|plan the|design the)\b/.test(input) && /\b(settlement|town|village|base|camp|houses|buildings)\b/.test(input)) {
     return missing('layout');
   }
-  if (/\bcheapest\b.*\bhouse\b/.test(input) || /\bhouse\b.*\bcheapest\b/.test(input)) {
-    return {
-      ok: false,
-      clarify: 'Cheapest is the homestead at 2 wood (say "build a house"). The thatched cottage costs 2 wood + 2 branches and the timber cabin costs 4 wood — say "build a cottage" or "build a cabin" to choose either.',
-    };
+  if (/\b(cheapest|least expensive|cheaper)\b/.test(input) && /\b(house|home|residence|dwelling)s?\b/.test(input)) {
+    // Compare real registry costs (wood + branch units). A tie would be a
+    // genuine design choice, so it asks instead of guessing.
+    const ranked = blueprintList().filter((b) => b.category === 'residence')
+      .map((b) => ({ b, total: b.woodCost + b.branchCost }))
+      .sort((a, b) => a.total - b.total || a.b.buildSeconds - b.b.buildSeconds);
+    const comparison = ranked.map(({ b }) => `${b.name} ${b.woodCost} wood${b.branchCost ? ` + ${b.branchCost} branches` : ''}`).join(', ');
+    const [first, second] = ranked;
+    if (!first || (second && second.total === first.total && second.b.buildSeconds === first.b.buildSeconds)) {
+      return { ok: false, clarify: `Several designs cost the same (${comparison}); say which one to build.` };
+    }
+    const place = parsePlaceIntent(input);
+    return { ok: true, goal: { kind: 'construct-house', quantity: 1, blueprint: first.b.id, place: place.intent, siteNote: place.note, note: `Cheapest residence by real cost is the ${first.b.name} (compared: ${comparison}).` } };
   }
-  if (/\b(build|construct)\b.*\bhouse\b/.test(input) || /\bgather\b.*\bwood\b.*\bhouse\b/.test(input) || /\benough wood\b.*\bconstruct\b/.test(input)) {
+  if (/\b(build|construct)\b.*\bhouses?\b/.test(input) || /\bgather\b.*\bwood\b.*\bhouse\b/.test(input) || /\benough wood\b.*\bconstruct\b/.test(input)) {
     const n = Math.min(qtyFrom(input, 1), 3);
     const place = parsePlaceIntent(input);
     return { ok: true, goal: { kind: 'construct-house', quantity: n, blueprint: 'homestead', place: place.intent, siteNote: place.note, note: `Complete ${n} homestead(s)${place.intent.kind === 'auto' ? '' : ` (${place.note})`}; each costs 2 wood and needs approval under restrictive policies.` } };
   }
-  if (/\b(timber cabin|log cabin|cabin)\b/.test(input) && /\b(build|construct|need|want)\b/.test(input)) {
+  if (/\b(timber cabins?|log cabins?|cabins?)\b/.test(input) && /\b(build|construct|need|want)\b/.test(input)) {
     const n = Math.min(qtyFrom(input, 1), 3);
     const place = parsePlaceIntent(input);
     return { ok: true, goal: { kind: 'construct-house', quantity: n, blueprint: 'timber-cabin', place: place.intent, siteNote: place.note, note: `Raise ${n} timber cabin(s)${place.intent.kind === 'auto' ? '' : ` (${place.note})`}; each costs 4 wood and needs approval. Taller and roomier than the homestead.` } };
   }
-  if (/\b(thatched cottage|\bcottage\b|thatched)\b/.test(input) && /\b(build|construct|need|want)\b/.test(input)) {
+  if (/\b(thatched cottages?|cottages?|thatched)\b/.test(input) && /\b(build|construct|need|want)\b/.test(input)) {
     const n = Math.min(qtyFrom(input, 1), 3);
     const place = parsePlaceIntent(input);
     return { ok: true, goal: { kind: 'construct-house', quantity: n, blueprint: 'thatched-cottage', place: place.intent, siteNote: place.note, note: `Raise ${n} thatched cottage(s)${place.intent.kind === 'auto' ? '' : ` (${place.note})`}; each costs 2 wood + 2 branches and needs approval.` } };
@@ -231,6 +247,12 @@ export function isGoalComplete(goal: GameGoal, state: Readonly<WorldState>): boo
     case 'fetch-water':
       return state.water >= goal.quantity;
     case 'construct-house': {
+      if (goal.sites && goal.sites.length > 0) {
+        // Multi-site goals finish when every requested site holds a complete
+        // house of the requested design — pre-existing houses elsewhere don't count.
+        const matching = Object.values(state.entities).flatMap((e) => (e.kind === 'house' && e.state === 'complete' && (!goal.blueprint || (e.blueprint ?? 'homestead') === goal.blueprint) ? [{ x: e.position.x, z: e.position.z }] : []));
+        return claimSites(goal.sites, matching, HOUSE_SITE_TOLERANCE).every((c) => c !== null);
+      }
       const houses = Object.values(state.entities).filter((e) => e.kind === 'house' && e.state === 'complete');
       if (!goal.blueprint || goal.blueprint === 'homestead') {
         // Legacy default: any finished house counts (old homesteads carry no blueprint tag).
@@ -241,6 +263,10 @@ export function isGoalComplete(goal: GameGoal, state: Readonly<WorldState>): boo
     case 'construct-farm':
       return Object.values(state.entities).filter((e) => e.kind === 'farm').length >= goal.quantity;
     case 'construct-shelter':
+      if (goal.sites && goal.sites.length > 0) {
+        const done = Object.values(state.entities).flatMap((e) => (e.kind === 'shelter' && e.state === 'complete' ? [{ x: e.position.x, z: e.position.z }] : []));
+        return claimSites(goal.sites, done, 2.0).every((c) => c !== null);
+      }
       return Object.values(state.entities).filter((e) => e.kind === 'shelter' && e.state === 'complete').length >= goal.quantity;
     case 'preserve':
       return (goal.resource === 'wood' ? state.wood : state.food) >= goal.quantity;

@@ -9,6 +9,8 @@ import type { ActionType } from '../world/types';import type { AgentDecision, Ag
 import type { GameGoal } from './goals';
 import { getRecipe } from './recipes';
 import { BLUEPRINTS, DEFAULT_HOUSE_BLUEPRINT, getBlueprint } from './blueprints';
+import { claimSites } from './placement';
+import { HOUSE_SITE_TOLERANCE } from './shelter';
 
 function nearest<T extends { x: number; z: number }>(from: { x: number; z: number }, items: T[]): T | undefined {
   let best: T | undefined;
@@ -213,7 +215,7 @@ export function nextStep(goal: GameGoal, obs: AgentObservation): AgentDecision |
     if (carried) return carried;
     const branches = obs.inventory['branch'] ?? 0;
     if (obs.wood >= bp.woodCost && branches >= bp.branchCost && !obs.worker.carrying) {
-      return { actionType: 'BUILD', targetEntityId: SETTLEMENT_ID, parameters: { structure: 'house', blueprint: bp.id, ...(site ? { x: site.x, z: site.z } : {}) }, reason: `Reserves cover the ${bp.name} (${bp.woodCost} wood${bp.branchCost > 0 ? ` + ${bp.branchCost} branch` : ''}); propose construction.` };
+      return { actionType: 'BUILD', targetEntityId: SETTLEMENT_ID, parameters: { structure: 'house', blueprint: bp.id, ...(site ? { x: site.x, z: site.z } : {}), ...(site && goal.exactSite ? { exact: true } : {}) }, reason: `Reserves cover the ${bp.name} (${bp.woodCost} wood${bp.branchCost > 0 ? ` + ${bp.branchCost} branch` : ''}); propose construction.` };
     }
     if (obs.wood < bp.woodCost) return gatherWoodStep();
     const source = nearest(at, [...obs.branches].filter((b) => b.available && !claimed.has(b.id)));
@@ -221,7 +223,8 @@ export function nextStep(goal: GameGoal, obs: AgentObservation): AgentDecision |
     return null;
   };
 
-  const buildShelterStep = (quantity: number): AgentDecision | null => {
+  const buildShelterStep = (quantity: number, siteOverride?: { x: number; z: number }): AgentDecision | null => {
+    const site = siteOverride ?? goal.site;
     const done = obs.shelters.filter((s) => s.complete).length;
     if (done >= quantity) return null; // goal completes on the next check; never over-build
     const carried = resolveCarrying(obs, 'Deliver the load before building; the work needs free hands.');
@@ -231,7 +234,7 @@ export function nextStep(goal: GameGoal, obs: AgentObservation): AgentDecision |
     // (single placement authority — the planner never invents coordinates),
     // unless the goal already resolved an exact player-directed site.
     if (obs.wood >= SHELTER_WOOD_COST && branches >= SHELTER_BRANCH_COST && !obs.worker.carrying) {
-      return { actionType: 'BUILD', targetEntityId: SETTLEMENT_ID, parameters: { structure: 'shelter', ...(goal.site ? { x: goal.site.x, z: goal.site.z } : {}), ...(goal.exactSite ? { exact: true } : {}) }, reason: goal.site ? `Materials ready; propose the shelter at the requested site (X:${goal.site.x} Z:${goal.site.z}).` : 'Wood and poles cover the shelter; propose construction at a clear site.' };
+      return { actionType: 'BUILD', targetEntityId: SETTLEMENT_ID, parameters: { structure: 'shelter', ...(site ? { x: site.x, z: site.z } : {}), ...(site && goal.exactSite ? { exact: true } : {}) }, reason: site ? `Materials ready; propose the shelter at the requested site (X:${site.x} Z:${site.z}).` : 'Wood and poles cover the shelter; propose construction at a clear site.' };
     }
     if (obs.wood < SHELTER_WOOD_COST) return gatherWoodStep();
     const source = nearest(at, [...obs.branches].filter((b) => b.available && !claimed.has(b.id)));
@@ -255,6 +258,17 @@ export function nextStep(goal: GameGoal, obs: AgentObservation): AgentDecision |
       return goal.resource === 'wood' ? gatherWoodStep() : gatherFoodStep();
     }
     case 'construct-house': {
+      if (goal.sites && goal.sites.length > 0) {
+        // Multi-site: work the first site no finished house fulfils. A site
+        // already claimed by an unfinished house resumes at that house's
+        // actual position (it may have shifted within tolerance).
+        const mine = obs.houses.filter((h) => !goal.blueprint || h.blueprint === goal.blueprint);
+        const claims = claimSites(goal.sites, mine, HOUSE_SITE_TOLERANCE);
+        const open = claims.findIndex((c) => c === null || !c.complete);
+        if (open < 0) return null;
+        const claimant = claims[open];
+        return buildHouseStep(goal.blueprint, claimant ? { x: claimant.x, z: claimant.z } : goal.sites[open]);
+      }
       const finished = obs.houses.filter((h) => h.complete && (!goal.blueprint || goal.blueprint === 'homestead' || h.blueprint === goal.blueprint)).length;
       if (finished >= goal.quantity) return null;
       return buildHouseStep(goal.blueprint, goal.site);
@@ -262,6 +276,13 @@ export function nextStep(goal: GameGoal, obs: AgentObservation): AgentDecision |
     case 'construct-farm':
       return buildStep('farm', FARM_WOOD_COST);
     case 'construct-shelter': {
+      if (goal.sites && goal.sites.length > 0) {
+        const claims = claimSites(goal.sites, obs.shelters, 2.0);
+        const open = claims.findIndex((c) => c === null || !c.complete);
+        if (open < 0) return null;
+        const claimant = claims[open];
+        return buildShelterStep(Number.POSITIVE_INFINITY, claimant ? { x: claimant.x, z: claimant.z } : goal.sites[open]);
+      }
       if (obs.shelters.filter((s) => s.complete).length >= goal.quantity) return null;
       return buildShelterStep(goal.quantity);
     }

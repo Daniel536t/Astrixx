@@ -90,6 +90,8 @@ export type HouseEntity = {
   progress: number;
   /** Blueprint id (default 'homestead' when absent, e.g. older saves). */
   blueprint?: string;
+  /** Collision radius from the blueprint (absent on legacy slot houses). */
+  footprint?: number;
 };
 
 export type FarmEntity = {

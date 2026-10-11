@@ -1,0 +1,79 @@
+{
+  "url": "http://127.0.0.1:5173/?e2e=1",
+  "mode": "LOCAL SIMULATION · NOT ONCHAIN — Phase 6 placement & blueprints",
+  "cheapestFeedback": "Goal set: BUILD 1 HOUSE. Cheapest residence by real cost is the Homestead cabin (compared: Homestead cabin 2 wood, Thatched cottage 2 wood + 2 branches, Timber cabin 4 wood). | Plan plan-01 awaiting approval; routine steps hold until governance releases it.",
+  "refusedFeedback": "Understood (construct-house:timber-cabin), but invalid location: X:0 Z:0 is not buildable for a Timber cabin — site overlaps the camp. Nothing was spent.",
+  "houses": [
+    {
+      "id": "house-01",
+      "blueprint": "timber-cabin",
+      "state": "complete",
+      "pos": {
+        "x": -6,
+        "z": 0
+      },
+      "footprint": 1.4
+    },
+    {
+      "id": "house-02",
+      "blueprint": "thatched-cottage",
+      "state": "complete",
+      "pos": {
+        "x": 7.5,
+        "z": 0
+      },
+      "footprint": 1.6
+    }
+  ],
+  "cottageDeviation": {
+    "requested": {
+      "x": 6.5,
+      "z": 0
+    },
+    "chosen": {
+      "x": 7.5,
+      "z": 0
+    }
+  },
+  "interpretationJournal": [
+    {
+      "source": "command",
+      "verdict": "interpreted",
+      "candidates": [
+        "construct-house:homestead"
+      ]
+    },
+    {
+      "source": "command",
+      "verdict": "capability-invalid-location",
+      "candidates": [
+        "construct-house:timber-cabin"
+      ]
+    },
+    {
+      "source": "command",
+      "verdict": "interpreted @ (-6,0) exact",
+      "candidates": [
+        "construct-house:timber-cabin"
+      ]
+    },
+    {
+      "source": "command",
+      "verdict": "interpreted @ (6.5,0)",
+      "candidates": [
+        "construct-house:thatched-cottage"
+      ]
+    },
+    {
+      "source": "command",
+      "verdict": "missing-capability:bridge",
+      "candidates": []
+    }
+  ],
+  "browserErrors": [],
+  "screenshots": {
+    "initial": "artifacts/astrix-phase6-initial.png",
+    "cabinConstruction": "artifacts/astrix-phase6-cabin-construction.png",
+    "twoDesigns": "artifacts/astrix-phase6-two-designs.png"
+  }
+}

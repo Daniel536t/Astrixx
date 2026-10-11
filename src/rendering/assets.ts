@@ -291,10 +291,12 @@ export class ProceduralAssetCatalog implements AssetCatalog {
     roof.rotation.y = Math.PI / 4;
     roof.scale.set(1.05, 1, 0.82);
     roof.castShadow = true;
+    roof.userData['part'] = 'house-roof';
     body.add(roof);
     const chimney = new THREE.Mesh(new THREE.BoxGeometry(0.3, 1.1, 0.3), stone);
     chimney.position.set(0.45, 2.3, -0.25);
     chimney.castShadow = true;
+    chimney.userData['part'] = 'house-roof';
     body.add(chimney);
     const door = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.85, 0.08), new THREE.MeshStandardMaterial({ color: '#3d2c1c', roughness: 1 }));
     door.position.set(0, 0.5, 0.65);
@@ -333,6 +335,7 @@ export class ProceduralAssetCatalog implements AssetCatalog {
     roof.rotation.y = Math.PI / 4;
     roof.scale.set(1.15, 1, 0.9);
     roof.castShadow = true;
+    roof.userData['part'] = 'house-roof';
     body.add(roof);
     for (const x of [-0.62, 0.62]) {
       const shutter = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.34, 0.06), timber);
@@ -379,6 +382,7 @@ export class ProceduralAssetCatalog implements AssetCatalog {
     roof.rotation.y = Math.PI / 4;
     roof.scale.set(1.02, 1, 0.84);
     roof.castShadow = true;
+    roof.userData['part'] = 'house-roof';
     body.add(roof);
     const chimney = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.85, 0.28), timber);
     chimney.position.set(0.62, 1.75, -0.3);

@@ -4,7 +4,7 @@ import { WorldSimulation, workersOf } from './simulation/WorldSimulation';
 import { WorldRenderer } from './rendering/WorldRenderer';
 import { LocalWorldStateAdapter, MagicBlockDevnetAdapter, type TransactionWallet } from './magicblock/MagicBlockAdapter';
 import { FarmDevnetAdapter, type FarmWallet } from './magicblock/FarmChain';
-import { FARM_WOOD_COST } from './world/types';
+import { FARM_WOOD_COST, SHELTER_FOOTPRINT } from './world/types';
 import { mountObservatory, updateObservatory, renderApprovals, renderCommandFeedback, renderGoal, renderMode, renderProvider, renderFarmAuthority } from './ui/Observatory';
 import { LocalGathererAgent } from './agent/LocalGathererAgent';
 import { ManualAgent } from './agent/ManualAgent';
@@ -13,7 +13,9 @@ import { parseCommand, GoalTracker } from './game/goals';
 import type { GameGoal } from './game/goals';
 import { validateInterpretedGoal } from './game/interpret';
 import { e2ePredicates } from './game/e2eStages';
-import { resolvePlaceIntent } from './game/placement';
+import { resolvePlaceIntent, resolvePlaceSites } from './game/placement';
+import { assessGoal } from './game/capabilities';
+import { DEFAULT_HOUSE_BLUEPRINT, getBlueprint } from './game/blueprints';
 import { nextStep, isGoalRelevant } from './game/planner';
 import { policyFor, isValidMode, type ControlMode } from './game/modes';
 import { parseStructuredDecision, validateDecisionAgainstWorld } from './agent/nvidia/DecisionSchema';
@@ -380,6 +382,19 @@ function resolveGoalSite(goal: Omit<GameGoal, 'id' | 'status' | 'createdAt'>): {
   }
   const worker = simulation.state.entities['worker-01'];
   const from = worker && 'position' in worker ? worker.position : { x: 0, z: 0 };
+  if (goal.quantity > 1 && (goal.kind === 'construct-house' || goal.kind === 'construct-shelter')) {
+    const footprint = goal.kind === 'construct-house' ? (getBlueprint(goal.blueprint ?? DEFAULT_HOUSE_BLUEPRINT)?.footprint ?? 1.2) : SHELTER_FOOTPRINT;
+    const many = resolvePlaceSites(simulation.state, goal.place, goal.quantity, from, footprint);
+    if (!many.ok) {
+      if (many.clarify === '__AUTO__') {
+        const { place: _dropped, ...rest } = goal;
+        return { ok: true, goal: rest };
+      }
+      return { ok: false, clarify: many.clarify };
+    }
+    const { place: _dropped, ...rest } = goal;
+    return { ok: true, goal: { ...rest, sites: many.sites, siteNote: many.description } };
+  }
   const resolved = resolvePlaceIntent(simulation.state, goal.place, from);
   if (!resolved.ok) {
     if (resolved.clarify === '__AUTO__') {
@@ -391,6 +406,25 @@ function resolveGoalSite(goal: Omit<GameGoal, 'id' | 'status' | 'createdAt'>): {
   const { place: _dropped, ...rest } = goal;
   const exact = goal.place?.kind === 'exact';
   return { ok: true, goal: { ...rest, site: { x: resolved.x, z: resolved.z }, siteNote: resolved.description, ...(exact ? { exactSite: true as const } : {}) } };
+}
+
+/**
+ * Feasibility gate between interpretation and goal: refuses (with the real
+ * reason) requests the world cannot satisfy right now, and journals both
+ * outcomes with their interpretation source for the Observatory.
+ */
+function admitGoal(goal: Omit<GameGoal, 'id' | 'status' | 'createdAt'>, source: 'command' | 'model-interpretation'): boolean {
+  const assessment = assessGoal(goal, simulation.state);
+  const label = `${goal.kind}${goal.blueprint ? `:${goal.blueprint}` : ''}${goal.recipe ? `:${goal.recipe}` : ''}`;
+  if (assessment.status !== 'available') {
+    simulation.recordJournal({ turn: 0, source, goal: null, candidates: [label], verdict: `capability-${assessment.status}`, chosen: null });
+    renderCommandFeedback(root, `Understood (${label}), but ${assessment.status.replace(/-/g, ' ')}: ${assessment.reason}`);
+    renderGoal(root, 'GOAL · NONE');
+    return false;
+  }
+  const where = goal.sites ? ` @ ${goal.sites.map((s) => `(${s.x},${s.z})`).join(' ')}` : goal.site ? ` @ (${goal.site.x},${goal.site.z})${goal.exactSite ? ' exact' : ''}` : '';
+  simulation.recordJournal({ turn: 0, source, goal: null, candidates: [label], verdict: `interpreted${where}`, chosen: label });
+  return true;
 }
 
 async function handleCommand(text: string): Promise<void> {
@@ -420,6 +454,7 @@ async function handleCommand(text: string): Promise<void> {
       renderGoal(root, 'GOAL · NONE');
       return;
     }
+    if (!admitGoal(withSite.goal, 'command')) return;
     const goal = goalTracker.setGoal({ ...withSite.goal }, simulation.state.tick);
     modelMisses = 0;
     simulation.setAgent(manualAgent);
@@ -459,10 +494,19 @@ async function handleCommand(text: string): Promise<void> {
     if (interpretation?.ok && interpretation.goal) {
       const validated = validateInterpretedGoal({ ...interpretation.goal, note: interpretation.goal.note || 'model goal' });
       if (!validated) {
+        simulation.recordJournal({ turn: 0, source: 'model-interpretation', goal: null, candidates: [], verdict: 'interpretation-invalid', chosen: null });
         renderCommandFeedback(root, interpretation?.clarify ?? 'The model proposed a goal outside the supported contract; nothing was set.');
         return;
       }
-      const goal = goalTracker.setGoal({ ...validated }, simulation.state.tick);
+      // The model's location intent goes through the same deterministic
+      // resolver and feasibility check as typed commands.
+      const withSite = resolveGoalSite(validated);
+      if (!withSite.ok) {
+        renderCommandFeedback(root, withSite.clarify);
+        return;
+      }
+      if (!admitGoal(withSite.goal, 'model-interpretation')) return;
+      const goal = goalTracker.setGoal({ ...withSite.goal }, simulation.state.tick);
       modelMisses = 0;
       simulation.setAgent(manualAgent);
       renderGoal(root, `GOAL · ${describeGoalText(goal)} · ACTIVE · VIA MODEL`);

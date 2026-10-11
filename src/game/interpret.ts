@@ -5,6 +5,7 @@
  * becomes a clarification, never a guessed goal.
  */
 import type { InferenceProvider } from '../agent/providers/InferenceProvider';
+import { validatePlaceIntent, type PlaceIntent } from './placement';
 
 export interface InterpretedGoal {
   kind: 'gather-wood' | 'gather-food' | 'construct-house' | 'construct-farm' | 'construct-shelter' | 'preserve' | 'prioritize' | 'craft';
@@ -13,6 +14,8 @@ export interface InterpretedGoal {
   recipe?: string;
   blueprint?: string;
   avoid?: Array<'wood' | 'food'>;
+  /** Construction location intent; resolved and validated deterministically, never trusted as coordinates. */
+  place?: PlaceIntent;
   note: string;
 }
 
@@ -25,7 +28,7 @@ export interface Interpretation {
   latencyMs: number;
 }
 
-const SCHEMA_HINT = '{"kind": "gather-wood|gather-food|construct-house|construct-farm|construct-shelter|preserve|prioritize|craft", "quantity": <positive int>, "resource": "wood|food (for preserve/prioritize)", "recipe": "stone-axe|carrying-basket (for craft)", "blueprint": "homestead|timber-cabin|thatched-cottage (for construct-house)", "avoid": ["wood|food"] (optional), "note": "<one sentence>"} — or {"clarify": "<question>"} when the request names no world action. No bridges exist (no river). Houses cost 2 wood. Only stone-axe and carrying-basket are craftable. Reply with exactly one JSON object.';
+const SCHEMA_HINT = '{"kind": "gather-wood|gather-food|construct-house|construct-farm|construct-shelter|preserve|prioritize|craft", "quantity": <positive int>, "resource": "wood|food (for preserve/prioritize)", "recipe": "stone-axe|carrying-basket (for craft)", "blueprint": "homestead|timber-cabin|thatched-cottage (for construct-house)", "avoid": ["wood|food"] (optional), "place": (optional, construction only) {"kind":"exact","x":<n>,"z":<n>} | {"kind":"relative","from":{"kind":"camp|pond"},"dir":"north|northeast|east|southeast|south|southwest|west|northwest","dist":"near|far"} | {"kind":"near","entity":{"kind":"camp|pond"}|{"kind":"tree","which":"largest|nearest"}} | {"kind":"edge","dir":"<compass>"}, "note": "<one sentence>"} — or {"clarify": "<question>"} when the request names no world action. No bridges exist (no river). Residences: homestead 2 wood, thatched-cottage 2 wood + 2 branches, timber-cabin 4 wood. X grows east, Z grows south (north is negative Z). Only stone-axe and carrying-basket are craftable. Reply with exactly one JSON object.';
 
 export function validateInterpretedGoal(value: unknown): InterpretedGoal | null {
   if (typeof value !== 'object' || value === null) return null;
@@ -41,6 +44,13 @@ export function validateInterpretedGoal(value: unknown): InterpretedGoal | null 
   if (v['avoid'] !== undefined) {
     if (!Array.isArray(v['avoid']) || !(v['avoid'] as unknown[]).every((a) => a === 'wood' || a === 'food')) return null;
   }
+  let place: PlaceIntent | undefined;
+  if (v['place'] !== undefined) {
+    if (v['kind'] !== 'construct-house' && v['kind'] !== 'construct-shelter') return null;
+    const checked = validatePlaceIntent(v['place']);
+    if (!checked) return null;
+    place = checked;
+  }
   if (typeof v['note'] !== 'string' || v['note'].length === 0) return null;
   return {
     kind: v['kind'] as InterpretedGoal['kind'],
@@ -49,6 +59,7 @@ export function validateInterpretedGoal(value: unknown): InterpretedGoal | null 
     recipe: v['recipe'] as string | undefined,
     blueprint: v['blueprint'] as string | undefined,
     avoid: v['avoid'] as Array<'wood' | 'food'> | undefined,
+    ...(place ? { place } : {}),
     note: v['note'] as string,
   };
 }

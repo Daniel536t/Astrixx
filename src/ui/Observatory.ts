@@ -266,6 +266,16 @@ export function renderPlan(root: HTMLElement, state: Readonly<WorldState>): void
     }
   }
   if (state.journal.length > 0) {
+    // Interpretation provenance: which interpreter (deterministic parser or
+    // model) produced the latest request, and whether it was admitted.
+    const lastInterp = [...state.journal].reverse().find((j) => j.verdict.startsWith('interpreted') || j.verdict.startsWith('capability-') || j.verdict.startsWith('missing-capability') || j.verdict === 'interpretation-invalid');
+    if (lastInterp) {
+      const sub = document.createElement('div');
+      sub.className = 'approval-empty';
+      sub.dataset['interpretation'] = lastInterp.source;
+      sub.textContent = `interpretation: ${lastInterp.source === 'command' ? 'deterministic parser' : lastInterp.source} → ${lastInterp.candidates[0] ?? 'none'} (${lastInterp.verdict})`;
+      list.append(sub);
+    }
     const lastReject = [...state.journal].reverse().find((j) => j.verdict.includes('reject') || j.verdict.includes('off-goal') || j.verdict.includes('invalid') || j.verdict.startsWith('plan-'));
     if (lastReject) {
       const sub = document.createElement('div');
@@ -409,7 +419,9 @@ function eventLabel(event: WorldEvent): string {
   if (event.type === 'ACTION_PROPOSED' && event.data['actionType'] === 'PICK_UP') return event.data['resourceId']?.toString().startsWith('food-') ? 'Food pickup proposed' : 'Log pickup proposed';
   if (event.type === 'ACTION_PROPOSED' && event.data['actionType'] === 'PLAN') return `Plan proposed (${String(event.data['kind'] ?? 'goal')})`;
   if (event.type === 'PLAN_STATUS_CHANGED') return `Plan ${String(event.data['status'] ?? 'updated')}`;
-  if (event.type === 'CONSTRUCTION_STAGE') return `Shelter ${String(event.data['stage'] ?? 'stage')} raised`;
+  if (event.type === 'CONSTRUCTION_STAGE') return `${event.data['structureType'] === 'house' ? String(event.data['blueprint'] ?? 'house') : 'Shelter'} ${String(event.data['stage'] ?? 'stage')} raised`;
+  if (event.type === 'CONSTRUCTION_STARTED' && event.data['deviation']) return 'Construction started (site shifted within tolerance)';
+  if (event.type === 'CONSTRUCTION_FAILED' && event.data['reason'] === 'invalid-placement') return `Construction refused: ${String(event.data['siteReason'] ?? 'invalid site')}`;
   if (event.type === 'MATERIAL_COLLECTED') return `${event.data['material'] === 'stone' ? 'Stone' : 'Branch'} collected`;
   if (event.type === 'CRAFTING_STARTED') return `Crafting ${String(event.data['recipe'] ?? 'item')} started`;
   if (event.type === 'CRAFTING_COMPLETED') return `${String(event.data['recipe'] ?? 'item')} crafted`;

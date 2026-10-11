@@ -4,7 +4,7 @@ import type { Agent, AgentDecision } from '../agent/Agent';
 import { distance, BASE_HOUSING, BERRY_REGROW_DURATION, CONSUMPTION_TICKS_PER_WORKER, FARM_GROW_DURATION, FARM_SLOTS, FARM_WOOD_COST, GROWTH_ARRIVAL_COST, GROWTH_CHECK_TICKS, GROWTH_FOOD_THRESHOLD, HOUSING_PER_HOUSE, HOUSE_SLOTS, MAX_WORKERS, REST_BUFF_TICKS, REST_SECONDS, REST_WORK_RATE, SAPLING_GROW_DURATION, SETTLEMENT_ID, SHELTER_BRANCH_COST, SHELTER_BUILD_SECONDS, SHELTER_FOOTPRINT, SHELTER_WOOD_COST, WORKER_ID, type ActionProposal, type ActionType, type DecisionRecord, type GamePlan, type InputEntry, type InputKind, type InputLog, type PlanStepRecord, type RiskLevel, type StockpileResource, type Vec2, type WorldEntity, type WorldEvent, type WorldState } from '../world/types';
 import { checkCraft, getRecipe, recipeSatisfied } from '../game/recipes';
 import { DEFAULT_HOUSE_BLUEPRINT, getBlueprint } from '../game/blueprints';
-import { findShelterSite, validateShelterSite } from '../game/shelter';
+import { findShelterSite, HOUSE_SITE_TOLERANCE, searchNearbySite, validateSite } from '../game/shelter';
 
 const STEP = 0.16;
 const CHOP_DURATION = 1.35;
@@ -19,6 +19,17 @@ const MAX_JOURNAL = 40;
 const RISK_RANK: Record<RiskLevel, number> = { LOW: 0, MEDIUM: 1, HIGH: 2 };
 
 type Worker = Extract<WorldEntity, { kind: 'worker' }>;
+/** Free-site construction parameters: shelters, and player-placed houses sized by blueprint. */
+type SiteBuildSpec = {
+  structureType: 'shelter' | 'house';
+  woodCost: number;
+  branchCost: number;
+  footprint: number;
+  buildSeconds: number;
+  /** Search radius for approximate requests (exact requests never search). */
+  tolerance: number;
+  blueprint?: string;
+};
 
 export function workersOf(state: WorldState): Worker[] {
   return Object.values(state.entities)
@@ -1197,21 +1208,25 @@ export class WorldSimulation {
    * nothing; resuming an interrupted site spends nothing. Invalid sites and
    * shortfalls fail with CONSTRUCTION_FAILED before any deduction line.
    */
-  private startShelterBuild(
+  private startSiteBuild(
     worker: Worker,
     decision: AgentDecision,
     proposal: ActionProposal,
     stepPlan: GamePlan | undefined,
+    spec: SiteBuildSpec,
   ): void {
+    const kind = spec.structureType;
+    const isKind = (entity: WorldEntity | undefined): entity is Extract<WorldEntity, { kind: 'shelter' | 'house' }> =>
+      entity !== undefined && entity.kind === kind;
     const fail = (reason: string, detail: Record<string, unknown> = {}): void => {
       this.refuseAction(proposal);
-      this.emit('CONSTRUCTION_FAILED', SETTLEMENT_ID, this.stampPlan({ workerId: worker.id, proposalId: proposal.id, reason, structureType: 'shelter', ...detail }, proposal.parameters['planId']));
+      this.emit('CONSTRUCTION_FAILED', SETTLEMENT_ID, this.stampPlan({ workerId: worker.id, proposalId: proposal.id, reason, structureType: kind, ...(spec.blueprint ? { blueprint: spec.blueprint } : {}), ...detail }, proposal.parameters['planId']));
     };
     const engage = (shelterId: string, site: { x: number; z: number }, elapsed: number): void => {
       worker.targetId = shelterId;
       if (Math.hypot(worker.position.x - site.x, worker.position.z - site.z) > 1.5) {
         worker.activity = 'moving';
-        this.moveToward(worker.position, site, STEP, { purpose: 'construction', structureType: 'shelter', targetEntityId: shelterId });
+        this.moveToward(worker.position, site, STEP, { purpose: 'construction', structureType: kind, targetEntityId: shelterId });
         return;
       }
       worker.activity = 'building';
@@ -1223,13 +1238,13 @@ export class WorldSimulation {
     const joinedId = proposal.parameters['structureId'];
     if (typeof joinedId === 'string') {
       const joined = this.state.entities[joinedId];
-      if (joined && joined.kind === 'shelter') {
+      if (isKind(joined)) {
         if (joined.state === 'complete') {
           this.finishAction(proposal, true);
           this.verifyAction(proposal, true);
           return;
         }
-        engage(joined.id, joined.position, joined.progress * SHELTER_BUILD_SECONDS);
+        engage(joined.id, joined.position, joined.progress * spec.buildSeconds);
         return;
       }
     }
@@ -1249,9 +1264,9 @@ export class WorldSimulation {
       const planRef = typeof proposal.parameters['planId'] === 'string'
         ? this.state.plans[proposal.parameters['planId']]
         : undefined;
-      const picked = planRef?.site ?? findShelterSite(this.state, worker.position);
+      const picked = planRef?.site ?? findShelterSite(this.state, worker.position, spec.footprint);
       if (!picked) {
-        fail('invalid-placement', { siteReason: 'no clear ground for a shelter' });
+        fail('invalid-placement', { siteReason: `no clear ground for a ${kind}` });
         return;
       }
       siteX = picked.x;
@@ -1268,25 +1283,30 @@ export class WorldSimulation {
     // would fail a fresh validation. A finished shelter here means
     // double-build: refuse without consulting anything else.
     const existing = Object.values(this.state.entities).find(
-      (entity) => entity.kind === 'shelter' && Math.hypot(entity.position.x - siteX, entity.position.z - siteZ) <= 0.5,
+      (entity) => isKind(entity) && Math.hypot(entity.position.x - siteX, entity.position.z - siteZ) <= 0.5,
     );
-    if (existing && existing.kind === 'shelter') {
-      if (existing.state === 'complete') {
+    const exactRequest = proposal.parameters['exact'] === true || decision.parameters?.['exact'] === true;
+    const approximateRequest = typeof rawX === 'number' && typeof rawZ === 'number' && !exactRequest;
+    if (isKind(existing)) {
+      // A finished structure on an approximate request falls through to the
+      // tolerance search below; exact or simulation-picked sites refuse.
+      if (existing.state === 'complete' && !approximateRequest) {
         fail('invalid-placement', { siteReason: `site already holds ${existing.id}` });
         return;
       }
-      proposal.parameters['structureId'] = existing.id;
-      engage(existing.id, existing.position, existing.progress * SHELTER_BUILD_SECONDS);
-      return;
+      if (existing.state !== 'complete') {
+        proposal.parameters['structureId'] = existing.id;
+        engage(existing.id, existing.position, existing.progress * spec.buildSeconds);
+        return;
+      }
     }
-    const site = validateShelterSite(this.state, siteX, siteZ, worker.id);
+    const site = validateSite(this.state, siteX, siteZ, spec.footprint, worker.id);
     if (!site.ok) {
       // Approximate requests search within tolerance and RECORD the
       // deviation (requested vs accepted, both visible on the proposal and
       // the start event). Exact coordinates never relocate: they fail here.
-      const exact = proposal.parameters['exact'] === true || decision.parameters?.['exact'] === true;
-      if (!exact) {
-        const nearby = searchNearbySite(this.state, siteX, siteZ, 2.0, worker.id);
+      if (!exactRequest) {
+        const nearby = searchNearbySite(this.state, siteX, siteZ, spec.tolerance, worker.id, spec.footprint);
         if (nearby) {
           proposal.parameters['deviation'] = { requested: { x: siteX, z: siteZ }, chosen: { x: nearby.x, z: nearby.z } };
           siteX = nearby.x;
@@ -1305,31 +1325,33 @@ export class WorldSimulation {
     if (Math.hypot(worker.position.x - siteX, worker.position.z - siteZ) > 1.5) {
       worker.targetId = null;
       worker.activity = 'moving';
-      this.moveToward(worker.position, { x: siteX, z: siteZ }, STEP, { purpose: 'construction', structureType: 'shelter' });
+      this.moveToward(worker.position, { x: siteX, z: siteZ }, STEP, { purpose: 'construction', structureType: kind });
       return;
     }
-    if (stepPlan && (stepPlan.spentWood + SHELTER_WOOD_COST > stepPlan.constraints.spendCapWood || this.state.wood < SHELTER_WOOD_COST)) {
-      fail(stepPlan.spentWood + SHELTER_WOOD_COST > stepPlan.constraints.spendCapWood ? 'spend-cap' : 'insufficient-wood', { need: SHELTER_WOOD_COST, have: this.state.wood });
+    if (stepPlan && (stepPlan.spentWood + spec.woodCost > stepPlan.constraints.spendCapWood || this.state.wood < spec.woodCost)) {
+      fail(stepPlan.spentWood + spec.woodCost > stepPlan.constraints.spendCapWood ? 'spend-cap' : 'insufficient-wood', { need: spec.woodCost, have: this.state.wood });
       return;
     }
-    if (this.state.wood < SHELTER_WOOD_COST) {
-      fail('insufficient-wood', { need: SHELTER_WOOD_COST, have: this.state.wood });
+    if (this.state.wood < spec.woodCost) {
+      fail('insufficient-wood', { need: spec.woodCost, have: this.state.wood });
       return;
     }
-    if ((worker.inventory['branch'] ?? 0) < SHELTER_BRANCH_COST) {
-      fail('insufficient-materials', { need: SHELTER_BRANCH_COST, have: worker.inventory['branch'] ?? 0, material: 'branch' });
+    if ((worker.inventory['branch'] ?? 0) < spec.branchCost) {
+      fail('insufficient-materials', { need: spec.branchCost, have: worker.inventory['branch'] ?? 0, material: 'branch' });
       return;
     }
-    this.state.wood -= SHELTER_WOOD_COST;
-    worker.inventory['branch'] = (worker.inventory['branch'] ?? 0) - SHELTER_BRANCH_COST;
+    this.state.wood -= spec.woodCost;
+    worker.inventory['branch'] = (worker.inventory['branch'] ?? 0) - spec.branchCost;
     if ((worker.inventory['branch'] ?? 0) <= 0) delete worker.inventory['branch'];
-    if (stepPlan) stepPlan.spentWood += SHELTER_WOOD_COST;
-    const count = Object.values(this.state.entities).filter((entity) => entity.kind === 'shelter').length;
-    const shelterId = `shelter-${String(count + 1).padStart(2, '0')}`;
+    if (stepPlan) stepPlan.spentWood += spec.woodCost;
+    const count = Object.values(this.state.entities).filter((entity) => entity.kind === kind).length;
+    const shelterId = `${kind}-${String(count + 1).padStart(2, '0')}`;
     proposal.parameters['structureId'] = shelterId;
-    this.state.entities[shelterId] = { id: shelterId, kind: 'shelter', position: { x: siteX, z: siteZ }, state: 'construction', progress: 0, footprint: SHELTER_FOOTPRINT };
+    this.state.entities[shelterId] = kind === 'shelter'
+      ? { id: shelterId, kind: 'shelter', position: { x: siteX, z: siteZ }, state: 'construction', progress: 0, footprint: spec.footprint }
+      : { id: shelterId, kind: 'house', position: { x: siteX, z: siteZ }, state: 'construction', progress: 0, blueprint: spec.blueprint ?? DEFAULT_HOUSE_BLUEPRINT, footprint: spec.footprint };
     worker.targetId = shelterId;
-    this.emit('CONSTRUCTION_STARTED', shelterId, this.stampPlan({ workerId: worker.id, proposalId: proposal.id, structureType: 'shelter', woodSpent: SHELTER_WOOD_COST, branchSpent: SHELTER_BRANCH_COST, woodRemaining: this.state.wood, site: { x: siteX, z: siteZ } }, proposal.parameters['planId']));
+    this.emit('CONSTRUCTION_STARTED', shelterId, this.stampPlan({ workerId: worker.id, proposalId: proposal.id, structureType: kind, ...(spec.blueprint ? { blueprint: spec.blueprint } : {}), woodSpent: spec.woodCost, branchSpent: spec.branchCost, woodRemaining: this.state.wood, site: { x: siteX, z: siteZ }, ...(proposal.parameters['deviation'] ? { deviation: proposal.parameters['deviation'] } : {}), ...(proposal.parameters['exact'] === true || decision.parameters?.['exact'] === true ? { exact: true } : {}) }, proposal.parameters['planId']));
     engage(shelterId, { x: siteX, z: siteZ }, 0);
   }
 
@@ -1363,15 +1385,14 @@ export class WorldSimulation {
     const duration = structure.kind === 'house'
       ? (getBlueprint(structure.blueprint ?? DEFAULT_HOUSE_BLUEPRINT)?.buildSeconds ?? BUILD_DURATION)
       : structure.kind === 'shelter' ? SHELTER_BUILD_SECONDS : BUILD_DURATION;
-    if (structure.kind === 'house') structure.progress = Math.min(1, task.elapsed / duration);
-    if (structure.kind === 'shelter') {
+    if (structure.kind === 'house' || structure.kind === 'shelter') {
       const before = structure.progress;
       structure.progress = Math.min(1, task.elapsed / duration);
       // Observable stages: frame → walls → roof, one event each as the work
       // crosses thirds. Never fabricated — each fires exactly once per build.
       for (const [edge, stage] of [[1 / 3, 'frame'], [2 / 3, 'walls']] as const) {
         if (before < edge && structure.progress >= edge) {
-          this.emit('CONSTRUCTION_STAGE', structure.id, this.stampPlan({ workerId: worker.id, structureType: 'shelter', stage, progress: structure.progress }, task.planId));
+          this.emit('CONSTRUCTION_STAGE', structure.id, this.stampPlan({ workerId: worker.id, structureType: structure.kind, ...(structure.kind === 'house' ? { blueprint: structure.blueprint ?? DEFAULT_HOUSE_BLUEPRINT } : {}), stage, progress: structure.progress }, task.planId));
         }
       }
     }
@@ -1862,7 +1883,15 @@ export class WorldSimulation {
       // mixed purse (stockpiled wood + pocketed branches). Houses and farms
       // keep their fixed-slot path below; shelters never touch it.
       if (structure === 'shelter') {
-        this.startShelterBuild(worker, decision, proposal, stepPlan);
+        this.startSiteBuild(worker, decision, proposal, stepPlan, { structureType: 'shelter', woodCost: SHELTER_WOOD_COST, branchCost: SHELTER_BRANCH_COST, footprint: SHELTER_FOOTPRINT, buildSeconds: SHELTER_BUILD_SECONDS, tolerance: 2.0 });
+        return;
+      }
+      // Player-directed houses (coordinates present) use the same free-site
+      // authority as shelters, sized by the blueprint footprint: exact
+      // requests fail rather than relocate; approximate ones record any
+      // deviation. Houses without coordinates keep the legacy plot path.
+      if (structure === 'house' && typeof decision.parameters?.['x'] === 'number' && typeof decision.parameters?.['z'] === 'number') {
+        this.startSiteBuild(worker, decision, proposal, stepPlan, { structureType: 'house', woodCost: blueprint!.woodCost, branchCost: blueprint!.branchCost, footprint: blueprint!.footprint, buildSeconds: blueprint!.buildSeconds, tolerance: HOUSE_SITE_TOLERANCE, blueprint: blueprint!.id });
         return;
       }
       // Cooperative join: another worker already started this proposal's
@@ -1893,44 +1922,33 @@ export class WorldSimulation {
         return;
       }
       const slots = structure === 'farm' ? FARM_SLOTS : HOUSE_SLOTS;
-      const used = Object.values(this.state.entities).filter((entity) => entity.kind === structure).length;
+      // Plot capacity counts plot-built structures only; free-placed houses
+      // (which carry a footprint) never consume a plot.
+      const used = Object.values(this.state.entities).filter((entity) => entity.kind === structure && !(entity.kind === 'house' && typeof entity.footprint === 'number')).length;
+      const total = Object.values(this.state.entities).filter((entity) => entity.kind === structure).length;
       if (used >= slots.length) {
         this.finishAction(proposal, false);
         this.emit('CONSTRUCTION_FAILED', target.id, this.stampPlan({ workerId: worker.id, proposalId: proposal.id, reason: 'invalid-placement', structureType: structure }, proposal.parameters['planId']));
         return;
       }
-      // Directed placement: an explicit slot index, or the free slot nearest
-      // requested coordinates. Requested, resolved, and final are all
-      // recorded — an invalid request fails here, never silently relocates.
+      // Plot placement: an explicit slot index, else the first free plot.
+      // Coordinate requests never reach here (free-site path above), so a
+      // requested position is never silently snapped to a plot.
       let slotIndex = used;
       if (structure === 'house') {
         const rawSlot = decision.parameters?.['slot'];
-        const rawX = decision.parameters?.['x'];
-        const rawZ = decision.parameters?.['z'];
         const slotFree = (index: number): boolean => {
           const slot = slots[index];
           if (!slot) return false;
           return !Object.values(this.state.entities).some(
-            (entity) => (entity.kind === 'house' || entity.kind === 'farm')
-              && Math.hypot(entity.position.x - slot.x, entity.position.z - slot.z) < 1.0,
+            (entity) => ((entity.kind === 'house' || entity.kind === 'farm')
+              && Math.hypot(entity.position.x - slot.x, entity.position.z - slot.z) < 1.0)
+              || ((entity.kind === 'house' || entity.kind === 'shelter') && typeof entity.footprint === 'number'
+                && Math.hypot(entity.position.x - slot.x, entity.position.z - slot.z) < entity.footprint + 1.2),
           );
         };
         if (typeof rawSlot === 'number' && Number.isInteger(rawSlot)) {
           slotIndex = rawSlot;
-        } else if (typeof rawX === 'number' && typeof rawZ === 'number') {
-          let best = -1;
-          let bestDist = Infinity;
-          slots.forEach((slot, index) => {
-            if (!slotFree(index)) return;
-            const d = Math.hypot(slot.x - rawX, slot.z - rawZ);
-            if (d < bestDist) {
-              bestDist = d;
-              best = index;
-            }
-          });
-          slotIndex = best;
-          proposal.parameters['requestedX'] = rawX;
-          proposal.parameters['requestedZ'] = rawZ;
         } else {
           // Legacy default: first free plot in slot order (identical to the
           // old slots[used] when plots fill sequentially).
@@ -1957,7 +1975,7 @@ export class WorldSimulation {
       }
       if (stepPlan) stepPlan.spentWood += cost;
       const slot = slots[structure === 'house' ? (proposal.parameters['slot'] as number) : used]!;
-      const structureId = `${structure}-${String(used + 1).padStart(2, '0')}`;
+      const structureId = `${structure}-${String(total + 1).padStart(2, '0')}`;
       proposal.parameters['structureId'] = structureId;
       this.state.entities[structureId] = structure === 'farm'
         ? { id: structureId, kind: 'farm', position: { ...slot }, state: 'growing', progress: 0 }

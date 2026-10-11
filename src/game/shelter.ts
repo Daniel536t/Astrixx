@@ -14,24 +14,41 @@ export interface SiteVerdict {
 /** Half-extent of the buildable wilderness square. */
 export const BUILD_BOUNDS = 9;
 
+/** Approximate house requests may shift up to this far (recorded as a deviation). */
+export const HOUSE_SITE_TOLERANCE = 3.0;
+
 function dist(a: Vec2, b: Vec2): number {
   return Math.hypot(a.x - b.x, a.z - b.z);
 }
 
+/** Footprint an existing structure occupies (legacy entities carry none). */
+function footprintOf(entity: { kind: string; footprint?: number }): number {
+  return typeof entity.footprint === 'number' ? entity.footprint : SHELTER_FOOTPRINT;
+}
+
 export function validateShelterSite(state: Readonly<WorldState>, x: number, z: number, ignoreId?: string): SiteVerdict {
+  return validateSite(state, x, z, SHELTER_FOOTPRINT, ignoreId);
+}
+
+/**
+ * Blueprint-aware site check: the candidate's own footprint radius plus the
+ * footprint of every structure it would neighbour. With both footprints at
+ * the shelter default this is exactly the original shelter rule table.
+ */
+export function validateSite(state: Readonly<WorldState>, x: number, z: number, footprint: number, ignoreId?: string | ReadonlySet<string>): SiteVerdict {
   if (!Number.isFinite(x) || !Number.isFinite(z)) return { ok: false, reason: 'site is not a valid position' };
   if (Math.abs(x) > BUILD_BOUNDS || Math.abs(z) > BUILD_BOUNDS) {
     return { ok: false, reason: 'site is outside the buildable clearing' };
   }
   const at = { x, z };
-  const R = SHELTER_FOOTPRINT;
+  const R = footprint;
   for (const entity of Object.values(state.entities)) {
     if (!('position' in entity)) continue;
     // The claimant never blocks its own site: the builder walks INTO the
     // arrival ring, and a 0.376-unit step can land inside the worker
     // exclusion radius. Without this, the walk overshoots the arrival
     // window and every later drive fails against the builder itself.
-    if (ignoreId !== undefined && entity.id === ignoreId) continue;
+    if (typeof ignoreId === 'string' ? entity.id === ignoreId : ignoreId?.has(entity.id)) continue;
     const d = dist(at, entity.position);
     switch (entity.kind) {
       case 'settlement':
@@ -50,7 +67,7 @@ export function validateShelterSite(state: Readonly<WorldState>, x: number, z: n
       case 'house':
       case 'farm':
       case 'shelter':
-        if (d < R + 1.8) return { ok: false, reason: `site overlaps ${entity.id}` };
+        if (d < R + footprintOf(entity) + 0.6) return { ok: false, reason: `site overlaps ${entity.id}` };
         break;
       case 'branch':
       case 'stone':
@@ -72,7 +89,7 @@ export function validateShelterSite(state: Readonly<WorldState>, x: number, z: n
  * valid wins. Same state → same site, so plans, validation, and execution
  * never disagree about where the shelter goes.
  */
-export function findShelterSite(state: Readonly<WorldState>, from: Vec2): Vec2 | null {
+export function findShelterSite(state: Readonly<WorldState>, from: Vec2, footprint: number = SHELTER_FOOTPRINT): Vec2 | null {
   const camp = state.entities['settlement-01'];
   const origin = camp && 'position' in camp ? camp.position : { x: 0, z: 0 };
   let best: Vec2 | null = null;
@@ -81,7 +98,7 @@ export function findShelterSite(state: Readonly<WorldState>, from: Vec2): Vec2 |
     for (let i = 0; i < 12; i += 1) {
       const angle = (i / 12) * Math.PI * 2;
       const candidate = { x: origin.x + Math.cos(angle) * radius, z: origin.z + Math.sin(angle) * radius };
-      if (!validateShelterSite(state, candidate.x, candidate.z).ok) continue;
+      if (!validateSite(state, candidate.x, candidate.z, footprint).ok) continue;
       const d = dist(from, candidate);
       if (d < bestDist) {
         bestDist = d;
@@ -104,9 +121,10 @@ export function searchNearbySite(
   x: number,
   z: number,
   tolerance: number,
-  ignoreId?: string,
+  ignoreId?: string | ReadonlySet<string>,
+  footprint: number = SHELTER_FOOTPRINT,
 ): Vec2 | null {
-  for (const radius of [0.5, 1.0, 1.5, 2.0]) {
+  for (const radius of [0.5, 1.0, 1.5, 2.0, 2.5, 3.0]) {
     if (radius > tolerance) break;
     for (let i = 0; i < 8; i += 1) {
       const angle = (i / 8) * Math.PI * 2;
@@ -114,7 +132,7 @@ export function searchNearbySite(
         x: Math.round((x + Math.cos(angle) * radius) * 100) / 100,
         z: Math.round((z + Math.sin(angle) * radius) * 100) / 100,
       };
-      if (validateShelterSite(state, candidate.x, candidate.z, ignoreId).ok) return candidate;
+      if (validateSite(state, candidate.x, candidate.z, footprint, ignoreId).ok) return candidate;
     }
   }
   return null;

@@ -13,6 +13,10 @@
  * command hits one, the parser returns its explanation AND records a
  * capability gap for future development instead of a dead-end refusal.
  */
+import { SHELTER_FOOTPRINT, type WorldState } from '../world/types';
+import type { GameGoal } from './goals';
+import { DEFAULT_HOUSE_BLUEPRINT, getBlueprint } from './blueprints';
+import { validateSite } from './shelter';
 
 export interface CapabilityDef {
   /** Stable identifier (action type, recipe id, or topic key). */
@@ -94,9 +98,9 @@ export const MISSING_CAPABILITIES: Record<string, MissingCapability> = {
     alternative: '"make a better axe" works at the camp right now',
   },
   'layout': {
-    understood: 'several buildings arranged relative to each other',
-    missing: 'multi-structure layout planning (each goal raises one structure)',
-    alternative: 'build sequentially: "build a cottage", then place the next with "near the camp" or coordinates',
+    understood: 'a whole settlement arranged to a design',
+    missing: 'free-form settlement layout planning (roads, zoning, arbitrary arrangements)',
+    alternative: 'place a row of one design in one go, e.g. "build three cottages along the northern edge", or one structure at a time with coordinates',
   },
   'fishing': {
     understood: 'food from the pond',
@@ -118,4 +122,76 @@ export function capabilitySummary(): string {
 
 export function missingSummary(): string {
   return 'Only stone-axe and carrying-basket are craftable; only lean-to shelters, houses, and farms are buildable. No hunting, taming, bridges, granaries, workshops, combat, or fishing.';
+}
+
+/**
+ * Why a recognised request can or cannot proceed right now. Missing
+ * capabilities ("not-implemented") are decided by the parser; this covers
+ * requests the world CAN do in principle.
+ */
+export type CapabilityStatus =
+  | 'available'
+  | 'missing-prerequisites'
+  | 'temporarily-unavailable'
+  | 'forbidden'
+  | 'invalid-location';
+
+export interface CapabilityAssessment {
+  status: CapabilityStatus;
+  reason: string;
+}
+
+const HOUSE_PLOTS = 3;
+const FARM_PLOTS = 2;
+
+/** Read-only feasibility check of a resolved goal against authoritative state. */
+export function assessGoal(goal: Omit<GameGoal, 'id' | 'status' | 'createdAt'>, state: Readonly<WorldState>): CapabilityAssessment {
+  const entities = Object.values(state.entities);
+  const standingTrees = entities.filter((e) => e.kind === 'tree' && e.state === 'standing').length;
+  const worker = state.entities['worker-01'];
+  const woodNeed = (need: number): CapabilityAssessment | null =>
+    state.wood < need && standingTrees === 0
+      ? { status: 'temporarily-unavailable', reason: `needs ${need} wood (have ${state.wood}) and every tree is felled; saplings must regrow first` }
+      : null;
+  switch (goal.kind) {
+    case 'gather-wood':
+      return woodNeed(goal.quantity) ?? { status: 'available', reason: 'standing trees or stock cover it' };
+    case 'gather-food': {
+      const source = entities.some((e) => (e.kind === 'berry-patch' && e.state === 'available') || (e.kind === 'farm' && e.state === 'ready') || (e.kind === 'food' && e.state === 'ground'));
+      return source || state.food >= goal.quantity ? { status: 'available', reason: 'a food source is ready' } : { status: 'temporarily-unavailable', reason: 'no berry patch or farm is ready; they regrow over time' };
+    }
+    case 'craft':
+      if (goal.recipe === 'stone-axe' && worker?.kind === 'worker' && worker.equipment.axe === null) {
+        return { status: 'missing-prerequisites', reason: 'the stone axe is shaped with the basic axe, which the inhabitant no longer holds' };
+      }
+      return { status: 'available', reason: 'recipe inputs can be gathered' };
+    case 'construct-farm': {
+      const farms = entities.filter((e) => e.kind === 'farm').length;
+      if (farms === 0 && state.leases['farm-01']?.holder === 'er') {
+        return { status: 'forbidden', reason: 'farm-01 write authority is leased to the MagicBlock rollup; local construction is refused until the lease returns' };
+      }
+      if (farms >= FARM_PLOTS) return { status: 'missing-prerequisites', reason: `all ${FARM_PLOTS} farm plots are used` };
+      return woodNeed(3) ?? { status: 'available', reason: 'a farm plot is free' };
+    }
+    case 'construct-house':
+    case 'construct-shelter': {
+      const isHouse = goal.kind === 'construct-house';
+      const bp = isHouse ? getBlueprint(goal.blueprint ?? DEFAULT_HOUSE_BLUEPRINT) : getBlueprint('lean-to');
+      if (!bp) return { status: 'invalid-location', reason: `unknown blueprint ${String(goal.blueprint)}` };
+      const footprint = isHouse ? bp.footprint : SHELTER_FOOTPRINT;
+      if (goal.site && goal.exactSite) {
+        const verdict = validateSite(state, goal.site.x, goal.site.z, footprint);
+        if (!verdict.ok) return { status: 'invalid-location', reason: `X:${goal.site.x} Z:${goal.site.z} is not buildable for a ${bp.name} — ${verdict.reason}. Nothing was spent.` };
+      }
+      if (isHouse && !goal.site && !goal.sites) {
+        const plotHouses = entities.filter((e) => e.kind === 'house' && typeof e.footprint !== 'number').length;
+        if (plotHouses + goal.quantity > HOUSE_PLOTS) {
+          return { status: 'missing-prerequisites', reason: `only ${HOUSE_PLOTS - plotHouses} automatic house plot(s) remain; give a location such as "east of the camp" or X/Z coordinates` };
+        }
+      }
+      return woodNeed(bp.woodCost) ?? { status: 'available', reason: `${bp.name}: ${bp.woodCost} wood${bp.branchCost ? ` + ${bp.branchCost} branches` : ''} each` };
+    }
+    default:
+      return { status: 'available', reason: 'no prerequisites' };
+  }
 }
